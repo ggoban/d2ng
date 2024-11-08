@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>더2N전</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/player.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <div id="left-sidebar">
+            <!-- 플레이어 정보 영역 -->
+            <div id="player-info">
+              <div id="player-basic-info">
+                <h3 style="text-align: center;">플레이어 정보</h3>
+                <p>이름: <span id="player-name">?</span></p>
+                <p>종족: <span id="player-race">?</span></p>
+                <p>직업: <span id="player-class">?</span></p>
+                <p>레벨: <span id="player-level">1</span></p>
+                <p>경험치: <span id="player-xp">0</span>/<span id="player-next-level-xp">300</span></p>
+                <p>숙련 보너스: +<span id="player-proficiency">2</span></p>
+                <p>스킬 포인트: <span id="player-skill-points">0</span></p>
+                <p>HP: <span id="player-hp">0</span>/<span id="player-max-hp">0</span></p>
+                <p>AC: <span id="player-ac">10</span></p>
+                <p>골드: <span id="player-gold">0</span></p>
+              </div>
+              <div id="player-stats">
+                <h4 style="text-align: center;">능력치</h3>
+                <div id="player-stats-grid">
+                  <p>근력: <span id="player-strength">10</span></p>
+                  <p>민첩: <span id="player-dexterity">10</span></p>
+                  <p>건강: <span id="player-constitution">10</span></p>
+                  <p>지능: <span id="player-intelligence">10</span></p>
+                  <p>지혜: <span id="player-wisdom">10</span></p>
+                  <p>매력: <span id="player-charisma">10</span></p>
+                </div>
+              </div>
+              <div id="skill-point-allocation" style="display: none;">
+                <!-- 스킬 포인트 할당 UI가 여기에 동적으로 추가됩니다 -->
+              </div>
+            </div>
+        </div>
+        <div id="main-content">
+            <h1>더2N전</h1>
+            <canvas id="gameCanvas" width="800" height="400"></canvas>
+            <div id="console"></div>
+            <div id="townButtons">
+                <button id="innButton">여관</button>
+                <button id="shopButton">상점</button>
+                <button id="guildButton">길드</button>
+                <button id="blacksmithButton">대장간</button>
+                <button id="dungeonButton">던전</button>
+            </div>
+            <div id="dungeonButtons" style="display: none;">
+                <button id="exploreButton">탐험 시작</button>
+                <button id="nextFloorButton" style="display: none;">다음 층으로</button>
+                <button id="returnTownButton" style="display: none;">마을 귀환</button>
+            </div>
+            <div id="battleButtons" style="display: none;">
+              <!-- 전투 버튼들은 JavaScript에서 동적으로 추가됩니다 -->
+          </div>
+        </div>
+        <div id="right-sidebar">
+            <!-- 인벤토리 영역 -->
+            <div id="inventory">
+                <h3 style="text-align: center;">인벤토리</h3>
+                <div id="inventory-grid"></div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/console.js"></script>
+    <script src="./js/ui.js"></script>
+    <script src="./js/item.js"></script>
+    <script src="./js/monster.js"></script>
+    <script src="./js/player.js"></script>
+    <script src="./js/battle.js"></script>
+    <script src="./js/event.js"></script>
+    <script src="./js/game.js"></script>
+</body>
+</html>

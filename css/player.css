@@ -1,0 +1,224 @@
+#left-sidebar, #right-sidebar {
+  width: 250px; /* 200px에서 250px로 증가 */
+  background-color: #2A2A2A;
+  padding: 20px;
+  overflow-y: auto;
+  box-sizing: border-box; /* 추가 */
+}
+
+#player-info, #inventory {
+  background-color: #333333;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+  box-sizing: border-box; /* 추가 */
+}
+
+#player-info h3, #inventory h3 {
+  color: #4CAF50;
+  margin-top: 0;
+}
+
+#player-basic-info, #player-stats {
+  border: 1px solid #4A4A4A;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+#player-basic-info p, #player-stats p {
+  margin: 5px 0;
+}
+
+#player-stats h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #4CAF50;
+}
+
+#player-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+#inventory-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+#inventory-list li {
+  margin-bottom: 5px;
+  background-color: #444444;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+#character-creation {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #333333;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  border: 2px solid #4CAF50;
+}
+
+#character-creation h2 {
+  margin-top: 0px;
+}
+
+#character-creation input,
+#character-creation select,
+#character-creation button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 5px;
+}
+
+#character-creation button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#character-creation button:hover {
+  background-color: #45a049;
+}
+
+#inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  padding: 5px;
+  background-color: #2A2A2A;
+  border-radius: 5px;
+}
+
+.inventory-slot {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: #3A3A3A;
+  border: 1px solid #4A4A4A;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px; /* 글자 크기를 줄임 */
+  text-align: center;
+  color: #AAAAAA;
+  word-break: break-all; /* 긴 단어가 줄바꿈되도록 함 */
+  overflow: hidden; /* 내용이 넘치면 숨김 */
+}
+
+.inventory-slot.empty::after {
+  content: 'Empty';
+}
+
+.inventory-slot:not(.empty) {
+  cursor: pointer;
+}
+
+#skill-point-allocation {
+  background-color: #333333;
+  border: 1px solid #4A4A4A;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 10px;
+  color: #FFFFFF;
+}
+
+#skill-point-allocation h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+  color: #4CAF50;
+}
+
+.skill-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+#skill-point-allocation button {
+  padding: 5px 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+#skill-point-allocation button:hover {
+  background-color: #45a049;
+}
+
+#close-allocation {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+}
+
+@media (max-width: 1200px) {
+  #left-sidebar, #right-sidebar {
+      width: 100%;
+      padding: 10px; /* 패딩 감소 */
+  }
+
+  #player-info, #inventory {
+      width: 100%; /* 변경 */
+      margin-bottom: 10px; /* 간격 조정 */
+  }
+
+  #player-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  #player-basic-info, #player-stats {
+      flex: 1;
+      min-width: 200px;
+  }
+
+  #player-stats-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+  }
+  
+  #inventory-grid {
+    grid-template-columns: repeat(10, 1fr); /* 모바일에서는 10열로 변경 */
+  }
+}
+
+@media (max-width: 600px) {
+  #left-sidebar, #right-sidebar {
+      padding: 5px; /* 패딩 추가 감소 */
+  }
+
+  #player-info, #inventory {
+      padding: 5px; /* 패딩 감소 */
+  }
+  
+  #player-info, #inventory {
+    padding: 5px;
+  }
+
+  #player-info {
+      flex-direction: column;
+  }
+
+  #player-stats {
+      margin-top: 10px;
+  }
+
+  #inventory-grid {
+    grid-template-columns: repeat(5, 1fr); /* 작은 화면에서는 다시 5열로 */
+  }
+}
