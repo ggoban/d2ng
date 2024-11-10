@@ -13,6 +13,10 @@ class EventManager {
     gameConsole.log("길드에 방문했습니다. 캐릭터 생성을 시작합니다.");
     this.game.currentLocation = "guild";
     this.game.updateCanvas();
+    
+    // 이어하기 후 버튼이 보여서 추가
+    const existingTownButton = document.getElementById("townButtons");
+    existingTownButton.style.display = 'none';
 
     // 기존 캐릭터 생성 UI가 있다면 제거
     const existingUI = document.getElementById("character-creation");

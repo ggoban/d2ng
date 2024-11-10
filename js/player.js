@@ -9,6 +9,8 @@ class Player {
     this.maxHp = 0;
     this.ac = 10; // 기본 AC 추가
     this.gold = 0;
+    this.equippedWeapon = null;
+    this.equippedArmor = null;
     this.inventorySize = 20;
     this.inventory = new Array(this.inventorySize).fill(null);
     this.stats = {
@@ -52,6 +54,8 @@ class Player {
     this.nextLevelXp = 300;
     this.proficiencyBonus = 2;
     this.skillPoints = 0;
+    this.equippedWeapon = null;
+    this.equippedArmor = null;
     this.resetInventory();
     this.updateInfo();
   }
@@ -64,6 +68,7 @@ class Player {
     this.setClassSuggestions();
     this.setInitialHp();
     this.setInitialAc(); // AC 초기화 메서드 호출
+    this.setInitialEquipment(); // 새로운 메서드 호출
     this.updateInfo();
   }
 
@@ -143,28 +148,29 @@ class Player {
     }
   }
 
-  getModifier(stat) {
-    return Math.floor((stat - 10) / 2);
+  setInitialEquipment() {
+    // 기본 무기 장착
+    this.equipWeapon(equipmentList.basicSword);
+    
+    // 기본 방어구 장착
+    this.equipArmor(equipmentList.basicArmor);
+
+    // 직업에 따라 추가 장비 제공 (선택사항)
+    /*switch (this.class) {
+        case 'Fighter':
+            this.equipWeapon(equipmentList.sword);
+            this.equipArmor(equipmentList.plateArmor);
+            break;
+        case 'Rogue':
+            this.equipWeapon(equipmentList.sword);
+            this.equipArmor(equipmentList.leatherArmor);
+            break;
+        // 다른 직업들에 대한 케이스 추가 가능
+    }*/
   }
 
-  updateInfo() {
-    document.getElementById('player-name').textContent = this.name;
-    document.getElementById('player-race').textContent = this.race;
-    document.getElementById('player-class').textContent = this.class;
-    document.getElementById('player-level').textContent = this.level;
-    document.getElementById('player-hp').textContent = this.hp;
-    document.getElementById('player-max-hp').textContent = this.maxHp;
-    document.getElementById('player-gold').textContent = this.gold;
-    document.getElementById('player-ac').textContent = this.ac; // AC 정보 업데이트
-    document.getElementById('player-xp').textContent = this.xp;
-    document.getElementById('player-next-level-xp').textContent = this.nextLevelXp;
-    document.getElementById('player-proficiency').textContent = this.proficiencyBonus;
-    document.getElementById('player-skill-points').textContent = this.skillPoints;
-
-    // Update stats
-    for (let stat in this.stats) {
-        document.getElementById(`player-${stat}`).textContent = this.stats[stat]+`(${this.getModifier(this.stats[stat])})`;
-    }
+  getModifier(stat) {
+    return Math.floor((stat - 10) / 2);
   }
 
   initializeInventory() {
@@ -218,6 +224,50 @@ class Player {
         return item;
     }
     return null;
+  }
+
+  equipWeapon(weapon) {
+    if (weapon.type === 'weapon') {
+        this.equippedWeapon = weapon;
+        gameConsole.log(`${weapon.name}을(를) 장착했습니다.`);
+        this.updateInfo();
+    } else {
+        gameConsole.log("이 아이템은 무기가 아닙니다.");
+    }
+  }
+
+  equipArmor(armor) {
+      if (armor.type === 'armor') {
+          this.equippedArmor = armor;
+          gameConsole.log(`${armor.name}을(를) 장착했습니다.`);
+          this.updateInfo();
+      } else {
+          gameConsole.log("이 아이템은 방어구가 아닙니다.");
+      }
+  }
+
+  unequipWeapon() {
+      if (this.equippedWeapon) {
+          gameConsole.log(`${this.equippedWeapon.name}을(를) 해제했습니다.`);
+          this.equippedWeapon = null;
+          this.updateInfo();
+      }
+  }
+
+  unequipArmor() {
+      if (this.equippedArmor) {
+          gameConsole.log(`${this.equippedArmor.name}을(를) 해제했습니다.`);
+          this.equippedArmor = null;
+          this.updateInfo();
+      }
+  }
+
+  getAttackBonus() {
+    return this.equippedWeapon ? this.equippedWeapon.attackBonus : 0;
+  }
+
+  getDefenseBonus() {
+      return this.equippedArmor ? this.equippedArmor.defenseBonus : 0;
   }
 
   takeDamage(amount) {
@@ -359,5 +409,37 @@ class Player {
       this.maxHp += 10;
       this.hp = this.maxHp;
       this.updateInfo();
+  }
+
+  updateInfo() {
+    document.getElementById('player-name').textContent = this.name;
+    document.getElementById('player-race').textContent = this.race;
+    document.getElementById('player-class').textContent = this.class;
+    document.getElementById('player-level').textContent = this.level;
+    const hpElement = document.getElementById('player-hp');
+    hpElement.textContent = this.hp;
+    if (this.hp < this.maxHp) {
+      if (this.hp < this.maxHp / 2) {
+        hpElement.style.color = 'red';  // 50% 미만일 때 빨간색
+      } else {
+        hpElement.style.color = 'yellow';  // 50% 이상 100% 미만일 때 노란색
+      }
+    } else {
+      hpElement.style.color = 'white';  // 100%일 때 흰색
+    }
+    document.getElementById('player-max-hp').textContent = this.maxHp;
+    document.getElementById('player-gold').textContent = this.gold;
+    document.getElementById('player-ac').textContent = this.ac; // AC 정보 업데이트
+    document.getElementById('player-xp').textContent = this.xp;
+    document.getElementById('player-next-level-xp').textContent = this.nextLevelXp;
+    document.getElementById('player-proficiency').textContent = this.proficiencyBonus;
+    document.getElementById('player-skill-points').textContent = this.skillPoints;
+    document.getElementById('player-weapon').textContent = this.equippedWeapon ? this.equippedWeapon.name+"(+"+this.equippedWeapon.attackBonus+")" : "없음";
+    document.getElementById('player-armor').textContent = this.equippedArmor ? this.equippedArmor.name+"(+"+this.equippedArmor.defenseBonus+")" : "없음";
+
+    // Update stats
+    for (let stat in this.stats) {
+        document.getElementById(`player-${stat}`).textContent = this.stats[stat]+`(${this.getModifier(this.stats[stat])})`;
+    }
   }
 }

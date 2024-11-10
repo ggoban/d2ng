@@ -258,17 +258,6 @@ class Game {
     return appropriateMonsters[Math.floor(Math.random() * appropriateMonsters.length)];
   }
 
-  displayMonsterInfo() {
-    gameConsole.log(`
-        몬스터 정보:
-        이름: ${this.currentMonster.name}
-        크기: ${this.currentMonster.size}
-        종류: ${this.currentMonster.type}
-        AC: ${this.currentMonster.ac}
-        HP: ${this.currentMonster.hp}/${this.currentMonster.maxHp}
-    `);
-  }
-
   goToNextFloor() {
     this.currentFloor++;
     if (this.currentFloor > this.maxFloorReached) {

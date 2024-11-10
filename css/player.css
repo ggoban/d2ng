@@ -41,6 +41,10 @@
   gap: 5px;
 }
 
+#player-hp {
+  transition: color 0.3s ease;
+}
+
 #inventory-list {
   list-style-type: none;
   padding: 0;

@@ -26,7 +26,9 @@ class Battle {
         종류: ${this.monster.type}
         AC: ${this.monster.ac}
         HP: ${this.monster.hp}/${this.monster.maxHp}
-        도전 지수: ${this.monster.cr}
+        도전 지수: ${this.monster.cr},
+        무기: ${this.monster.weapon.name},
+        방어구: ${this.monster.armor.name}
     `);
   }
 
@@ -60,9 +62,9 @@ class Battle {
   
   monsterAction() {
     gameConsole.log(`${this.monster.name}의 턴입니다.`);
-    const attackRoll = Math.floor(Math.random() * 20) + 1 + Math.floor((this.monster.stats.strength - 10) / 2);
-    if (attackRoll >= this.player.ac) {
-        const damage = Math.max(1, Math.floor(Math.random() * 6) + 1 + Math.floor((this.monster.stats.strength - 10) / 2));
+    const attackRoll = Math.floor(Math.random() * 20) + 1 + Math.floor((this.monster.stats.strength - 10) / 2) + this.monster.getAttackBonus();
+    if (attackRoll >= this.player.ac + this.player.getDefenseBonus()) {
+        const damage = Math.max(1, Math.floor(Math.random() * 6) + 1 + Math.floor((this.monster.stats.strength - 10) / 2) + this.monster.getAttackBonus());
         const playerSurvived = this.player.takeDamage(damage);
         gameConsole.log(`${this.monster.name}의 공격이 성공했습니다! 플레이어가 ${damage}의 피해를 입었습니다.`);
         if (!playerSurvived) {
@@ -78,9 +80,9 @@ class Battle {
   }
 
   playerAttack() {
-    const attackRoll = Math.floor(Math.random() * 20) + 1 + this.player.getModifier(this.player.stats.strength);
-    if (attackRoll >= this.monster.ac) {
-        const damage = Math.max(1, Math.floor(Math.random() * 6) + 1 + this.player.getModifier(this.player.stats.strength));
+    const attackRoll = Math.floor(Math.random() * 20) + 1 + this.player.getModifier(this.player.stats.strength) + this.player.getAttackBonus();
+    if (attackRoll >= this.monster.ac + this.monster.getDefenseBonus()) {
+        const damage = Math.max(1, Math.floor(Math.random() * 6) + 1 + this.player.getModifier(this.player.stats.strength) + this.player.getAttackBonus());
         this.monster.hp = Math.max(0, this.monster.hp - damage);
         gameConsole.log(`플레이어의 공격이 성공했습니다! ${damage}의 피해를 입혔습니다.`);
         if (this.monster.hp <= 0) {

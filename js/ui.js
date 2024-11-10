@@ -11,6 +11,7 @@ class UI {
         blacksmith: 'blacksmith.jpg',
         dungeon: 'dungeon.jpg'
     };
+    this.monsterImages = {};
   }
 
   loadImage(location) {
@@ -97,6 +98,57 @@ class UI {
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
     this.ctx.fillText(button.text, button.x + button.width / 2, button.y + button.height / 2);
+  }
+
+  loadMonsterImage(monster) {
+    if (this.monsterImages[monster.ename]) {
+        return this.monsterImages[monster.ename];
+    }
+
+    const img = new Image();
+    img.src = `./images/monster/${monster.ename.toLowerCase()}.png`;
+    this.monsterImages[monster.ename] = img;
+    return img;
+  }
+
+  drawMonster(monster) {
+    const image = this.loadMonsterImage(monster);
+    if (image.complete) {
+        const scaleFactor = 0.8;
+        const width = this.canvas.width * 0.3 * scaleFactor;
+        const height = this.canvas.height * 0.4 * scaleFactor;
+        const x = this.canvas.width / 2 - width / 2;
+        const y = this.canvas.height / 2 - height / 2 + 25;
+        
+        this.ctx.drawImage(image, x, y, width, height);
+    } else {
+        image.onload = () => {
+            this.drawMonster(monster);
+        };
+        image.onerror = () => {
+            console.error(`Failed to load image for monster: ${monster.ename}`);
+            // 여기에 기본 이미지를 그리는 로직을 추가할 수 있습니다.
+        };
+    }
+
+    // 몬스터 정보 텍스트 그리기 (한글 이름 사용)
+    this.ctx.fillStyle = 'white';
+    this.ctx.font = '20px Arial';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(monster.name, this.canvas.width / 2, this.canvas.height / 2 + 120);
+    // HP 그리기
+    let hpColor;
+    if (monster.hp < monster.maxHp) {
+        if (monster.hp < monster.maxHp / 2) {
+            hpColor = 'red';  // 50% 미만일 때 빨간색
+        } else {
+            hpColor = 'yellow';  // 50% 이상 100% 미만일 때 노란색
+        }
+    } else {
+        hpColor = 'white';  // 100%일 때 흰색
+    }
+    this.ctx.fillStyle = hpColor;
+    this.ctx.fillText(`HP: ${monster.hp}/${monster.maxHp}`, this.canvas.width / 2, this.canvas.height / 2 + 150);
   }
 
   updateCanvas(location, exploration, inDungeon, currentFloor) {
