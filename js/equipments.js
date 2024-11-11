@@ -71,6 +71,7 @@ const weapons = {
   greatsword: new Weapon("Greatsword", "50gp", "2d6", DamageType.SLASHING, 6, [WeaponProperty.HEAVY, WeaponProperty.TWO_HANDED]),
   longsword: new Weapon("Longsword", "15gp", "1d8", DamageType.SLASHING, 3, [WeaponProperty.VERSATILE]),
   rapier: new Weapon("Rapier", "25gp", "1d8", DamageType.PIERCING, 2, [WeaponProperty.FINESSE]),
+
   scimitar: new Weapon("Scimitar", "25gp", "1dd", DamageType.SLASHING, 3, [WeaponProperty.FINESSE, WeaponProperty.LIGHT]),
   
   // Martial Ranged Weapons
