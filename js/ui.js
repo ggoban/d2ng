@@ -150,7 +150,11 @@ class UI {
         hpColor = 'white';  // 100%일 때 흰색
     }
     this.ctx.fillStyle = hpColor;
-    this.ctx.fillText(`HP: ${monster.hp}/${monster.maxHp}`, this.canvas.width / 2, this.canvas.height / 2 + 150);
+    this.ctx.fillText(`HP: ${monster.hp}/${monster.maxHp}`, this.canvas.width / 2 - 50, this.canvas.height / 2 + 150);
+
+    // AC 표시
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText(`AC: ${monster.ac}`, this.canvas.width / 2 + 50, this.canvas.height / 2 + 150);
   }
 
   updateCanvas(location, exploration, inDungeon, currentFloor) {

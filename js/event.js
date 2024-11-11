@@ -74,14 +74,14 @@ class EventManager {
 
     if (name && race && characterClass) {
         this.game.player.setCharacter(name, race, characterClass);
-        gameConsole.log(`${name}(${race}/${characterClass})(이)가 생성되었습니다!`);
+        gameConsole.log(`(System) ${name}(${race}/${characterClass})(이)가 생성되었습니다!`);
         const creationUI = document.getElementById('character-creation');
         if (creationUI) {
             document.body.removeChild(creationUI);
         }
         this.game.startGame();
     } else {
-        gameConsole.log("이름, 종족, 직업을 모두 선택해주세요.");
+        gameConsole.log("(System) 이름, 종족, 직업을 모두 선택해주세요.");
     }
   }
 }

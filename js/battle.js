@@ -9,7 +9,7 @@ class Battle {
 
   start() {
       this.game.isInBattle = true;
-      gameConsole.log(`${this.monster.name}과(와) 조우했습니다! 전투가 시작됩니다.`);
+      gameConsole.log(`(System) ${this.monster.name}과(와) 조우했습니다! 전투가 시작됩니다.`);
       this.displayMonsterInfo();
       this.determineInitiative();
       this.game.exploreButton.style.display = 'none';
@@ -20,6 +20,7 @@ class Battle {
 
   displayMonsterInfo() {
     gameConsole.log(`
+        (System)
         몬스터 정보:
         이름: ${this.monster.name}
         크기: ${this.monster.size}
@@ -36,33 +37,33 @@ class Battle {
 
     if (playerInitiative >= monsterInitiative) {
         this.initiativeOrder = [this.player, this.monster];
-        gameConsole.log("플레이어가 선공합니다!");
+        gameConsole.log("(System) 플레이어가 선공합니다!");
     } else {
         this.initiativeOrder = [this.monster, this.player];
-        gameConsole.log(`${this.monster.name}이(가) 선공합니다!`);
+        gameConsole.log(`(System) ${this.monster.name}이(가) 선공합니다!`);
     }
   }
 
   rollInitiative(character) {
     const dexModifier = Math.floor((character.stats.dexterity - 10) / 2);
-    return Utils.rollDice(20) + dexModifier;
+    return Utils.rollDice(20, character.name) + dexModifier;
   }
 
   nextTurn() {
     const currentCharacter = this.initiativeOrder[0];
     if (currentCharacter === this.player) {
-        gameConsole.log(`------------------------------------`);
-        gameConsole.log("플레이어의 턴입니다. 행동을 선택하세요.");
+        gameConsole.log(`(System) ------------------------------------`);
+        gameConsole.log("(System) 플레이어의 턴입니다. 행동을 선택하세요.");
         // 플레이어의 행동은 버튼 클릭으로 처리됩니다.
     } else {
-        gameConsole.log(`-------------------------------`);
-        gameConsole.log(`${this.monster.name}의 턴입니다.`);
+        gameConsole.log(`(System) -------------------------------`);
+        gameConsole.log(`(System) ${this.monster.name}의 턴입니다.`);
         this.monsterAction();
     }
   }
   
   monsterAction() {
-    const attackRollDice = Utils.rollDice(20);
+    const attackRollDice = Utils.rollDice(20, this.monster.name);
     const attackRoll = attackRollDice + this.monster.getAttackBonus();
         
     if (attackRollDice === 20 || (attackRollDice !== 1 && attackRoll >= this.player.ac)) {
@@ -70,20 +71,20 @@ class Battle {
         
         if (attackRollDice === 20) {
             damage *= 2;  // 크리티컬 히트 시 데미지 2배
-            gameConsole.log("크리티컬 히트! 몬스터의 공격이 치명적입니다!");
+            gameConsole.log("(System) 크리티컬 히트! 몬스터의 공격이 치명적입니다!");
         }
 
         const playerSurvived = this.player.takeDamage(damage);
-        gameConsole.log(`${this.monster.name}의 공격이 성공했습니다! ${this.monster.equippedWeapon ? this.monster.equippedWeapon.name : '맨손'}으로 ${damage}의 피해를 입혔습니다.`);
+        gameConsole.log(`(System) ${this.monster.name}의 공격이 성공했습니다! ${this.monster.equippedWeapon ? this.monster.equippedWeapon.name : '맨손'}으로 ${damage}의 피해를 입혔습니다.`);
         
         if (!playerSurvived) {
             this.end(false);
             return;
         }
     } else if (attackRollDice === 1) {
-        gameConsole.log("크리티컬 미스! 몬스터의 공격이 완전히 빗나갔습니다.");
+        gameConsole.log("(System) 크리티컬 미스! 몬스터의 공격이 완전히 빗나갔습니다.");
     } else {
-        gameConsole.log(`${this.monster.name}의 공격이 빗나갔습니다.`);
+        gameConsole.log(`(System) ${this.monster.name}의 공격이 빗나갔습니다.`);
     }    
     this.game.updateCanvas();
     this.initiativeOrder.push(this.initiativeOrder.shift());
@@ -91,24 +92,24 @@ class Battle {
   }
 
   playerAttack() {
-    const attackRollDice = Utils.rollDice(20);
+    const attackRollDice = Utils.rollDice(20, this.player.name);
     const attackRoll = attackRollDice + this.player.getAttackBonus();
     if (attackRollDice === 20 || (attackRollDice !== 1 && attackRoll >= this.monster.ac)) {
         let damage = this.player.getAttackDamage();
         if (attackRollDice === 20) {
           damage *= 2;  // 크리티컬 히트 시 데미지 2배
-          gameConsole.log("크리티컬 히트! 데미지가 2배가 됩니다!");
+          gameConsole.log("(System) 크리티컬 히트! 데미지가 2배가 됩니다!");
         }
         this.monster.hp = Math.max(0, this.monster.hp - damage);
-        gameConsole.log(`플레이어의 공격이 성공했습니다! ${this.player.equippedWeapon ? this.player.equippedWeapon.name : '맨손'}으로 ${damage}의 피해를 입혔습니다.`);
+        gameConsole.log(`(System) 플레이어의 공격이 성공했습니다! ${this.player.equippedWeapon ? this.player.equippedWeapon.name : '맨손'}으로 ${damage}의 피해를 입혔습니다.`);
         if (this.monster.hp <= 0) {
             this.end(true);
             return;
         }
     } else if (attackRollDice === 1) {
-      gameConsole.log("크리티컬 미스! 플레이어의 공격이 완전히 빗나갔습니다.");
+      gameConsole.log("(System) 크리티컬 미스! 플레이어의 공격이 완전히 빗나갔습니다.");
     } else {
-        gameConsole.log("플레이어의 공격이 빗나갔습니다.");
+        gameConsole.log("(System) 플레이어의 공격이 빗나갔습니다.");
     }
     this.game.updateCanvas();
     this.initiativeOrder.push(this.initiativeOrder.shift());
@@ -117,10 +118,10 @@ class Battle {
 
   playerFlee() {
     if (Math.random() < 0.5) {
-        gameConsole.log("도망에 성공했습니다!");
+        gameConsole.log("(System) 도망에 성공했습니다!");
         this.end(false);
     } else {
-        gameConsole.log("도망에 실패했습니다.");
+        gameConsole.log("(System) 도망에 실패했습니다.");
         this.initiativeOrder.push(this.initiativeOrder.shift());
         this.nextTurn();
     }
@@ -129,7 +130,7 @@ class Battle {
   end(isVictory) {
     this.game.isInBattle = false;
     if (isVictory) {
-        gameConsole.log(`${this.monster.name}을(를) 물리쳤습니다!`);
+        gameConsole.log(`(System) ${this.monster.name}을(를) 물리쳤습니다!`);
         this.player.gainExperience(this.monster.xp);
         this.game.increaseExploration(this.explorationGain);
         // this.dropEquipment(); 장비 드랍 관련 기능 추후 고도화
@@ -138,11 +139,11 @@ class Battle {
     } else {
         if (this.player.hp <= 0) {
             // 여기에 패배 시 처리 로직을 추가할 수 있습니다.
-            gameConsole.log(`당신은 ${this.monster.name}에게 패배했습니다. 이번 모험은 여기까지 입니다...`);
+            gameConsole.log(`DM: 당신은 ${this.monster.name}에게 패배했습니다. 당신의 이번 여정은 여기까지 입니다...`);
             this.game.gameOver();
             return;
         } else {
-            gameConsole.log(`전투가 종료되었습니다.`);
+            gameConsole.log(`(System) 전투가 종료되었습니다.`);
             // this.game.exploreButton.style.display = 'inline';
             // this.game.battleButtons.style.display = 'none';
         }

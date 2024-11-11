@@ -33,7 +33,7 @@ class Game {
         this.townButtons.style.display = 'none';
         this.eventManager.startCharacterCreationEvent();
       } else {
-        gameConsole.log('더2N전에 오신 것을 환영합니다! 이동할 장소를 선택하세요.');
+        gameConsole.log('(System) 더2N전에 오신 것을 환영합니다! 이동할 장소를 선택하세요.');
       }
       //this.resetGame();
   }
@@ -72,8 +72,6 @@ class Game {
     this.returnTownButton.style.display = 'none';
     this.battleButtons.style.display = 'none';
 
-    document.getElementById('skill-point-allocation').style.display = 'none';
-
     // 캔버스 이벤트 리스너 제거
     this.canvas.removeEventListener('click', this.handleCanvasClick);
     gameConsole.clear();
@@ -83,13 +81,13 @@ class Game {
   startGame() {
     this.gameStarted = true;
     this.townButtons.style.display = 'flex';
-    this.goToLocation('town', `${this.player.name}님의 앞으로의 여정에 ···의 축복이 함께하길...`)
+    this.goToLocation('town', `DM: ${this.player.name}님의 앞으로의 여정에 ···의 축복이 함께하길...`)
     this.addTestItem();
     // 여기에 게임 시작 후 추가적인 초기화 로직을 넣을 수 있습니다.
   }
 
   gameOver() {
-    gameConsole.log('게임 오버! 캐릭터가 사망했습니다.');
+    gameConsole.log('(System) 게임 오버! 캐릭터가 사망했습니다.');
     this.player.reset(); // player reset 호출 추가
     this.isGameOver = true; // 게임 오버 상태 추가
     this.updateCanvas();
@@ -131,6 +129,13 @@ class Game {
       document.getElementById('exploreButton').addEventListener('click', () => this.explore());
       document.getElementById('nextFloorButton').addEventListener('click', () => this.goToNextFloor());
       document.getElementById('returnTownButton').addEventListener('click', () => this.returnToTown());
+      // 이벤트 리스너 설정 (game.js 또는 main.js에 추가)
+      document.querySelectorAll('.stat-increase-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const stat = this.getAttribute('data-stat');
+          game.player.allocateSkillPoint(stat);
+        });
+      });
   }
 
   updateCanvas() {
@@ -151,19 +156,19 @@ class Game {
   }
 
   goToInn() {
-      this.goToLocation('inn', '여관으로 이동했습니다. 여기서 휴식을 취할 수 있습니다.');
+      this.goToLocation('inn', '(System) 여관으로 이동했습니다. 여기서 휴식을 취할 수 있습니다.');
   }
 
   goToShop() {
-      this.goToLocation('shop', '상점으로 이동했습니다. 다양한 아이템을 구매할 수 있습니다.');
+      this.goToLocation('shop', '(System) 상점으로 이동했습니다. 다양한 아이템을 구매할 수 있습니다.');
   }
 
   goToGuild() {
-      this.goToLocation('guild', '길드로 이동했습니다. 퀘스트를 받거나 스킬을 배울 수 있습니다.');
+      this.goToLocation('guild', '(System) 길드로 이동했습니다. 퀘스트를 받거나 스킬을 배울 수 있습니다.');
   }
 
   goToBlacksmith() {
-      this.goToLocation('blacksmith', '대장간으로 이동했습니다. 무기와 방어구를 제작하거나 강화할 수 있습니다.');
+      this.goToLocation('blacksmith', '(System) 대장간으로 이동했습니다. 무기와 방어구를 제작하거나 강화할 수 있습니다.');
   }
 
   goToDungeon() {
@@ -172,10 +177,10 @@ class Game {
     if (this.maxFloorReached === 0) {
         this.currentFloor = 1;
         this.maxFloorReached = 1;
-        gameConsole.log('던전에 처음 입장했습니다. 1층부터 탐험을 시작하세요!');
+        gameConsole.log('DM: 던전에 처음 입장했습니다. 1층부터 탐험을 시작하세요!');
     } else {
         this.currentFloor = this.maxFloorReached;
-        gameConsole.log(`이전에 도달한 ${this.maxFloorReached}층부터 탐험을 재개합니다.`);
+        gameConsole.log(`(System) 이전에 도달한 ${this.maxFloorReached}층부터 탐험을 재개합니다.`);
     }
     this.exploration = 0;
     this.updateCanvas();
@@ -217,7 +222,7 @@ class Game {
         // this.nextFloorButton.style.display = 'inline';
         // this.returnTownButton.style.display = 'inline';
     }
-    gameConsole.log(`탐험을 진행했습니다. 탐사도가 ${explorationGain}% 증가했습니다.`);
+    gameConsole.log(`(System) 탐험을 진행했습니다. 탐사도가 ${explorationGain}% 증가했습니다.`);
     this.updateExplorationButtons();
     this.updateCanvas();
   }
@@ -265,7 +270,7 @@ class Game {
     }
     this.exploration = 0;
     this.updateCanvas();
-    gameConsole.log(`던전 ${this.currentFloor}층으로 올라왔습니다. 새로운 탐험을 시작하세요!`);
+    gameConsole.log(`(System) 던전 ${this.currentFloor}층으로 올라왔습니다. 새로운 탐험을 시작하세요!`);
     this.exploreButton.style.display = 'inline';
     this.nextFloorButton.style.display = 'none';
     this.returnTownButton.style.display = 'none';
@@ -275,7 +280,7 @@ class Game {
       this.inDungeon = false;
       this.currentLocation = 'town';
       this.updateCanvas();
-      gameConsole.log(`마을로 귀환했습니다. 던전 ${this.maxFloorReached}층까지 도달했습니다.`);
+      gameConsole.log(`(System) 마을로 귀환했습니다. 던전 ${this.maxFloorReached}층까지 도달했습니다.`);
       this.townButtons.style.display = 'flex';
       this.dungeonButtons.style.display = 'none';
   }
@@ -288,16 +293,17 @@ addTestItem() {
     this.player.addItem(potion);
     this.player.addItem(potion);
     this.player.addItem(potion);
-    gameConsole.log(`${potion.name}을 인벤토리에 추가했습니다.`);
+    gameConsole.log(`DM: 당신의 여정을 축복하며 ${potion.name}을 선물로 드리겠습니다.`);
+    gameConsole.log(`(System) ${potion.name}을 인벤토리에 추가했습니다.`);
   } else {
-    gameConsole.log("인벤토리가 가득 찼습니다.");
+    gameConsole.log("(System) 인벤토리가 가득 찼습니다.");
   }
 }
 
   // 예시: 아이템 획득 메서드
   addItemToInventory(item) {
     this.player.addItem(item);
-    gameConsole.log(`${item.name}을(를) 획득했습니다!`);
+    gameConsole.log(`(System) ${item.name}을(를) 획득했습니다!`);
   }
 }
 

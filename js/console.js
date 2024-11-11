@@ -6,7 +6,7 @@ class GameConsole {
   }
 
   log(message) {
-      this.consoleElement.innerHTML += `<span>&gt; ${message}</span><br>`;
+      this.consoleElement.innerHTML += `<span>${message}</span><br>`;
       this.consoleElement.scrollTop = this.consoleElement.scrollHeight;
   }
 

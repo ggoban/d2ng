@@ -31,19 +31,16 @@
                 <p>스킬 포인트: <span id="player-skill-points">0</span></p>
                 <p>골드: <span id="player-gold">0</span></p>                
               </div>
-              <div id="player-stats">
-                <h4 style="text-align: center;">능력치</h3>
+              <div id="player-stats" style="text-align: center;">
+                <h3>능력치</h3>
                 <div id="player-stats-grid">
-                  <p>근력: <span id="player-strength">10</span></p>
-                  <p>민첩: <span id="player-dexterity">10</span></p>
-                  <p>건강: <span id="player-constitution">10</span></p>
-                  <p>지능: <span id="player-intelligence">10</span></p>
-                  <p>지혜: <span id="player-wisdom">10</span></p>
-                  <p>매력: <span id="player-charisma">10</span></p>
+                  <p>근력: <span id="player-strength">10</span> <button class="stat-increase-btn" data-stat="strength" style="display:none;">+</button></p>
+                  <p>민첩: <span id="player-dexterity">10</span> <button class="stat-increase-btn" data-stat="dexterity" style="display:none;">+</button></p>
+                  <p>건강: <span id="player-constitution">10</span> <button class="stat-increase-btn" data-stat="constitution" style="display:none;">+</button></p>
+                  <p>지능: <span id="player-intelligence">10</span> <button class="stat-increase-btn" data-stat="intelligence" style="display:none;">+</button></p>
+                  <p>지혜: <span id="player-wisdom">10</span> <button class="stat-increase-btn" data-stat="wisdom" style="display:none;">+</button></p>
+                  <p>매력: <span id="player-charisma">10</span> <button class="stat-increase-btn" data-stat="charisma" style="display:none;">+</button></p>
                 </div>
-              </div>
-              <div id="skill-point-allocation" style="display: none;">
-                <!-- 스킬 포인트 할당 UI가 여기에 동적으로 추가됩니다 -->
               </div>
             </div>
         </div>
@@ -80,6 +77,7 @@
     <script src="./js/ui.js"></script>
     <script src="./js/item.js"></script>
     <script src="./js/equipments.js"></script>
+    <script src="./js/spells.js"></script>
     <script src="./js/monster.js"></script>
     <script src="./js/player.js"></script>
     <script src="./js/battle.js"></script>

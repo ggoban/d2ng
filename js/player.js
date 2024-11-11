@@ -31,6 +31,7 @@ class Player {
       120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000,
     ];
     this.skillPoints = 0;
+    this.spellBook = new SpellBook();
   }
 
   reset() {
@@ -57,6 +58,7 @@ class Player {
     this.skillPoints = 0;
     this.equippedWeapon = null;
     this.equippedArmor = null;
+    this.equippedShield = null;
     this.resetInventory();
     this.updateInfo();
   }
@@ -237,10 +239,10 @@ class Player {
     const weapon = weapons[weaponName];
     if (weapon) {
       this.equippedWeapon = weapon;
-      gameConsole.log(`${weapon.name}을(를) 장착했습니다.`);
+      gameConsole.log(`(System) ${weapon.name}을(를) 장착했습니다.`);
       this.updateInfo();
     } else {
-      gameConsole.log("해당 무기를 찾을 수 없습니다.");
+      gameConsole.log("(System) 해당 무기를 찾을 수 없습니다.");
     }
   }
 
@@ -249,21 +251,21 @@ class Player {
     if (armor) {
       if (armor.type === ArmorType.SHIELD) {
         this.equippedShield = armor;
-        gameConsole.log(`${armor.name}을(를) 장착했습니다.`);
+        gameConsole.log(`(System) ${armor.name}을(를) 장착했습니다.`);
       } else {
         this.equippedArmor = armor;
-        gameConsole.log(`${armor.name}을(를) 착용했습니다.`);
+        gameConsole.log(`(System) ${armor.name}을(를) 착용했습니다.`);
       }
       this.updateAC();
       this.updateInfo();
     } else {
-      gameConsole.log("해당 갑옷을 찾을 수 없습니다.");
+      gameConsole.log("(System) 해당 갑옷을 찾을 수 없습니다.");
     }
   }
 
   unequipWeapon() {
     if (this.equippedWeapon) {
-      gameConsole.log(`${this.equippedWeapon.name}을(를) 해제했습니다.`);
+      gameConsole.log(`(System) ${this.equippedWeapon.name}을(를) 해제했습니다.`);
       this.equippedWeapon = null;
       this.updateInfo();
     }
@@ -271,7 +273,7 @@ class Player {
 
   unequipArmor() {
     if (this.equippedArmor) {
-      gameConsole.log(`${this.equippedArmor.name}을(를) 해제했습니다.`);
+      gameConsole.log(`(System) ${this.equippedArmor.name}을(를) 해제했습니다.`);
       this.equippedArmor = null;
       this.updateAC();
       this.updateInfo();
@@ -280,7 +282,7 @@ class Player {
 
   unequipShield() {
     if (this.equippedShield) {
-      gameConsole.log(`${this.equippedShield.name}을(를) 해제했습니다.`);
+      gameConsole.log(`(System) ${this.equippedShield.name}을(를) 해제했습니다.`);
       this.equippedShield = null;
       this.updateAC();
       this.updateInfo();
@@ -294,7 +296,7 @@ class Player {
         .map(Number);
       let damage = 0;
       for (let i = 0; i < diceCount; i++) {
-        damage += Utils.rollDice(diceSides);
+        damage += Utils.rollDice(diceSides, this.name);
       }
       // 힘 또는 민첩 수정치 추가 (교묘함 무기의 경우 더 높은 것 사용)
       const strMod = this.getModifier("strength");
@@ -366,7 +368,7 @@ class Player {
 
   gainExperience(xp) {
     this.xp += xp;
-    gameConsole.log(`${xp} 경험치를 획득했습니다! (총 경험치: ${this.xp})`);
+    gameConsole.log(`(System) ${xp} 경험치를 획득했습니다! (총 경험치: ${this.xp})`);
     this.updateInfo();
     this.checkLevelUp();
   }
@@ -384,70 +386,19 @@ class Player {
       this.increaseHitPoints(levelsGained);
       this.skillPoints += 2;
       gameConsole.log(
-        `레벨 업! 현재 레벨: ${this.level}, 다음 필요 경험치는 ${this.xpTable[newLevel]}XP`
+        `(System) 레벨 업! 현재 레벨: ${this.level}, 다음 필요 경험치는 ${this.xpTable[newLevel]}XP`
       );
-      gameConsole.log(`스킬 포인트 2개 획득했습니다.`);
+      gameConsole.log(`(System) 스킬 포인트 2개 획득했습니다.`);
       this.nextLevelXp = this.xpTable[newLevel];
       this.updateInfo();
-      this.showSkillPointAllocationUI();
     }
-  }
-
-  showSkillPointAllocationUI() {
-    const allocationUI = document.getElementById("skill-point-allocation");
-    allocationUI.style.display = "block";
-    allocationUI.innerHTML = `
-        <h3>스킬 포인트 할당</h3>
-        <p>남은 스킬 포인트: <span id="remaining-skill-points">${this.skillPoints}</span></p>
-        <div class="skill-buttons">
-            <button id="str-up">근력 +</button>
-            <button id="dex-up">민첩 +</button>
-            <button id="con-up">건강 +</button>
-            <button id="int-up">지능 +</button>
-            <button id="wis-up">지혜 +</button>
-            <button id="cha-up">매력 +</button>
-        </div>
-    `;
-
-    const updateRemainingPoints = () => {
-      document.getElementById("remaining-skill-points").textContent =
-        this.skillPoints;
-      if (this.skillPoints === 0) allocationUI.style.display = "none";
-    };
-
-    const allocatePoint = (stat) => {
-      if (this.allocateSkillPoint(stat)) {
-        updateRemainingPoints();
-      }
-    };
-
-    document
-      .getElementById("str-up")
-      .addEventListener("click", () => allocatePoint("strength"));
-    document
-      .getElementById("dex-up")
-      .addEventListener("click", () => allocatePoint("dexterity"));
-    document
-      .getElementById("con-up")
-      .addEventListener("click", () => allocatePoint("constitution"));
-    document
-      .getElementById("int-up")
-      .addEventListener("click", () => allocatePoint("intelligence"));
-    document
-      .getElementById("wis-up")
-      .addEventListener("click", () => allocatePoint("wisdom"));
-    document
-      .getElementById("cha-up")
-      .addEventListener("click", () => allocatePoint("charisma"));
   }
 
   allocateSkillPoint(stat) {
     if (this.skillPoints > 0 && this.stats[stat] < 20) {
       this.stats[stat]++;
       this.skillPoints--;
-      gameConsole.log(
-        `${stat} 능력치가 1 증가했습니다. 현재 ${stat}: ${this.stats[stat]}`
-      );
+      gameConsole.log(`(System) ${this.name}의 ${stat} 능력치가 1 증가했습니다. 현재 ${stat}: ${this.stats[stat]}`);
       this.updateInfo();
       return true;
     }
@@ -516,12 +467,18 @@ class Player {
       // 갑옷을 입지 않은 경우
       baseAC += dexMod;
     }
-
     if (this.equippedShield) {
       baseAC += this.equippedShield.ac;
     }
-
     this.ac = baseAC;
+  }
+
+  learnSpell(spellName) {
+    this.spellBook.learnSpell(spellName);
+  }
+
+  castSpell(spellName, target) {
+      this.spellBook.castSpell(spellName, this, target);
   }
 
   updateInfo() {
@@ -560,10 +517,19 @@ class Player {
     document.getElementById("player-skill-points").textContent =
       this.skillPoints;
 
-    // Update stats
+    // 스탯 업데이트 및 스킬 포인트 버튼 표시/숨김
     for (let stat in this.stats) {
-      document.getElementById(`player-${stat}`).textContent =
-        this.stats[stat] + `(${this.getModifier(stat)})`;
+      const statElement = document.getElementById(`player-${stat}`);
+      statElement.textContent = `${this.stats[stat]} (${this.getModifier(stat)})`;
+      
+      const increaseBtn = statElement.nextElementSibling;
+      if (this.skillPoints > 0 && this.stats[stat] < 20) {
+        increaseBtn.style.display = 'inline';
+      } else {
+        increaseBtn.style.display = 'none';
+      }
     }
+    // 스킬 포인트 표시
+    document.getElementById("player-skill-points").textContent = this.skillPoints;
   }
 }

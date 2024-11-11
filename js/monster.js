@@ -86,7 +86,7 @@ class Monster {
         const [diceCount, diceSides] = this.equippedWeapon.damage.split('d').map(Number);
         let damage = 0;
         for (let i = 0; i < diceCount; i++) {
-            damage += Utils.rollDice(diceSides);
+            damage += Utils.rollDice(diceSides, this.name);
         }
         if (this.equippedWeapon.properties.includes(WeaponProperty.FINESSE)) {
             damage += Math.max(this.getModifier('strength'), this.getModifier('dexterity'));
@@ -98,7 +98,7 @@ class Monster {
         return Math.max(1, damage);
     }
     // 맨손 공격
-    return Math.max(1, Utils.rollDice(4) + this.getModifier('strength'));
+    return Math.max(1, Utils.rollDice(4, this.name) + this.getModifier('strength'));
   }
 
   takeDamage(amount) {

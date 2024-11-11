@@ -45,6 +45,20 @@
   transition: color 0.3s ease;
 }
 
+.stat-increase-btn {
+  margin-left: 5px;
+  padding: 0 5px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.stat-increase-btn:hover {
+  background-color: #45a049;
+}
+
 #inventory-list {
   list-style-type: none;
   padding: 0;
@@ -125,49 +139,6 @@
 
 .inventory-slot:not(.empty) {
   cursor: pointer;
-}
-
-#skill-point-allocation {
-  background-color: #333333;
-  border: 1px solid #4A4A4A;
-  border-radius: 5px;
-  padding: 10px;
-  margin-top: 10px;
-  color: #FFFFFF;
-}
-
-#skill-point-allocation h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 1.1em;
-  color: #4CAF50;
-}
-
-.skill-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
-  margin-bottom: 10px;
-}
-
-#skill-point-allocation button {
-  padding: 5px 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 0.9em;
-}
-
-#skill-point-allocation button:hover {
-  background-color: #45a049;
-}
-
-#close-allocation {
-  display: block;
-  width: 100%;
-  margin-top: 10px;
 }
 
 @media (max-width: 1200px) {
