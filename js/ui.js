@@ -136,6 +136,8 @@ class UI {
     this.ctx.font = '20px Arial';
     this.ctx.textAlign = 'center';
     this.ctx.fillText(monster.name, this.canvas.width / 2, this.canvas.height / 2 + 120);
+    //this.ctx.fillText(`무기: ${monster.weapon ? monster.weapon.name : "없음"}`, this.canvas.width / 2, this.canvas.height / 2 + 180);
+    //this.ctx.fillText(`방어구: ${monster.armor ? monster.armor.name : "없음"}`, this.canvas.width / 2, this.canvas.height / 2 + 210);
     // HP 그리기
     let hpColor;
     if (monster.hp < monster.maxHp) {

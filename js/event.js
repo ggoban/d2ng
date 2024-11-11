@@ -39,10 +39,10 @@ class EventManager {
           </select>
           <select id="character-class">
             <option value="">직업 선택</option>
-            <option value="Fighter">파이터 (+2 근력, +1 건강)</option>
-            <option value="Rogue">로그 (+2 민첩, +1 지능)</option>
-            <option value="Wizard">위저드 (+2 지능, +1 지혜)</option>
-            <option value="Cleric">클레릭 (+2 지혜, +1 매력)</option>
+            <option value="Fighter">파이터(힘+5,민+3,건+4,지능,지혜+2,매력-2)</option>
+            <option value="Rogue">로그(힘-2,민+5,건+4,지능+2,지혜+3,매력)</option>
+            <option value="Wizard">위저드(힘-2,민+3,건+4,지능+5,지혜,매력+2)</option>
+            <option value="Cleric">클레릭(힘+3,민+2,건+4,지능,지혜+5,매력-2)</option>
           </select>
           <p>선택한 종족과 직업에 따라 초기 능력치가 조정됩니다.</p>
           <button id="create-character">캐릭터 생성</button>
