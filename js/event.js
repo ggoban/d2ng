@@ -7,10 +7,10 @@ class EventManager {
   }
 
   startCharacterCreationEvent() {
-    gameConsole.log("우리 더2N전 마을에 방문하신 여행자여 환영합니다.");
-    gameConsole.log("던전에 입장하시려면 여행자분의 이름과 직업을 길드에 등록해야 합니다.");
-    gameConsole.log("먼저 길드로 안내 해드리겠습니다. 이후 천천히 마을을 둘러봐주세요.");
-    gameConsole.log("길드에 방문했습니다. 캐릭터 생성을 시작합니다.");
+    gameConsole.log("DM: 우리 더2N전 마을에 방문하신 여행자여 환영합니다.");
+    gameConsole.log("DM: 던전에 입장하시려면 여행자분의 이름과 직업을 길드에 등록해야 합니다.");
+    gameConsole.log("DM: 먼저 길드로 안내 해드리겠습니다. 이후 천천히 마을을 둘러봐주세요.");
+    gameConsole.log("(System) 길드에 방문했습니다. 캐릭터 생성을 시작합니다.");
     this.game.currentLocation = "guild";
     this.game.updateCanvas();
     

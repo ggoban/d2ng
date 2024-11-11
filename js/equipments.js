@@ -56,9 +56,14 @@ const weapons = {
   lightHammer: new Weapon("Light Hammer", "2gp", "1d4", DamageType.BLUDGEONING, 2, [WeaponProperty.LIGHT, WeaponProperty.THROWN]),
   mace: new Weapon("Mace", "5gp", "1d6", DamageType.BLUDGEONING, 4, []),
   spear: new Weapon("Spear", "1gp", "1d6", DamageType.PIERCING, 3, [WeaponProperty.THROWN, WeaponProperty.VERSATILE]),
+  sickle: new Weapon("Sickle", "1gp", "1d4", DamageType.SLASHING, 2, [WeaponProperty.LIGHT]),
+  javelin: new Weapon("Javelin", "5sp", "1d6", DamageType.PIERCING, 2, [WeaponProperty.THROWN]),
   quarterstaff: new Weapon("Quarterstaff", "2sp", "1d6", DamageType.BLUDGEONING, 4, [WeaponProperty.VERSATILE]),
+  club: new Weapon("Club", "1sp", "1d4", DamageType.BLUDGEONING, 2, [WeaponProperty.LIGHT]),
+  handaxe: new Weapon("handaxe", "5gp", "1d6", DamageType.SLASHING, 2, [WeaponProperty.LIGHT, WeaponProperty.THROWN]),
   
   // Simple Ranged Weapons
+  dart: new Weapon("Dart", "5cp", "1d4", DamageType.PIERCING, 0.25, [WeaponProperty.FINESSE, WeaponProperty.THROWN]),
   lightCrossbow: new Weapon("Light Crossbow", "25gp", "1d8", DamageType.PIERCING, 5, [WeaponProperty.AMMUNITION, WeaponProperty.LOADING, WeaponProperty.TWO_HANDED]),
   shortbow: new Weapon("Shortbow", "25gp", "1d6", DamageType.PIERCING, 2, [WeaponProperty.AMMUNITION, WeaponProperty.TWO_HANDED]),
   
