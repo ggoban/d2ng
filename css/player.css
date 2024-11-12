@@ -1,38 +1,43 @@
+/* player.css */
+
 #left-sidebar, #right-sidebar {
-  width: 250px; /* 200px에서 250px로 증가 */
-  background-color: #2A2A2A;
-  padding: 20px;
+  width: 250px;
+  background-color: var(--color-secondary);
+  padding: var(--spacing-large);
   overflow-y: auto;
-  box-sizing: border-box; /* 추가 */
+  box-sizing: border-box;
 }
 
-#player-info, #inventory {
-  background-color: #333333;
+#player-info {
+  background-color: var(--color-secondary);
   border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 20px;
-  box-sizing: border-box; /* 추가 */
+  padding: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+  box-sizing: border-box;
 }
 
-#player-info h3, #inventory h3 {
-  color: #4CAF50;
+#player-info h3 {
+  color: var(--color-primary);
   margin-top: 0;
+  font-size: 1.2rem;
 }
 
 #player-basic-info, #player-stats {
   border: 1px solid #4A4A4A;
-  padding: 10px;
+  padding: var(--spacing-medium);
   border-radius: 5px;
 }
 
 #player-basic-info p, #player-stats p {
-  margin: 5px 0;
+  margin: var(--spacing-small) 0;
+  font-size: 0.9rem;
 }
 
 #player-stats h4 {
   margin-top: 0;
-  margin-bottom: 10px;
-  color: #4CAF50;
+  margin-bottom: var(--spacing-medium);
+  color: var(--color-primary);
+  font-size: 1.1rem;
 }
 
 #player-stats-grid {
@@ -46,17 +51,35 @@
 }
 
 .stat-increase-btn {
-  margin-left: 5px;
-  padding: 0 5px;
-  background-color: #4CAF50;
-  color: white;
+  margin-left: var(--spacing-small);
+  padding: 0 var(--spacing-small);
+  background-color: var(--color-primary);
+  color: var(--color-text);
   border: none;
   border-radius: 3px;
   cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease; /* 배경색에만 트랜지션 적용 */
 }
 
 .stat-increase-btn:hover {
-  background-color: #45a049;
+  background-color: var(--color-hover);
+}
+
+#inventory {
+  background-color: var(--color-secondary);
+  border-radius: 5px;
+  padding: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+  box-sizing: border-box;
+  border: 1px solid #4A4A4A;
+}
+
+#inventory h3 {
+  color: var(--color-primary);
+  margin-top: 0;
+  font-size: 1.2rem;
+  margin-bottom: var(--spacing-medium); /* 제목 아래 여백 추가 */
 }
 
 #inventory-list {
@@ -71,9 +94,43 @@
   border-radius: 3px;
 }
 
+#inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-small);
+  padding: var(--spacing-small);
+  background-color: var(--color-background);
+  border-radius: 5px;
+}
+
+.inventory-slot {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--color-secondary);
+  border: 1px solid #4A4A4A;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem; /* 0.75rem = 12px (기본 16px 기준) */
+  text-align: center;
+  color: var(--color-text);
+  word-break: break-all;
+  overflow: hidden;
+}
+
+.inventory-slot.empty::after {
+  content: 'Empty';
+  color: #888; /* 연한 회색으로 변경 */
+}
+
+.inventory-slot:not(.empty) {
+  cursor: pointer;
+}
+
 #character-creation {
   position: fixed;
-  top: 30%;
+  top: 27%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #333333;
@@ -106,39 +163,6 @@
 
 #character-creation button:hover {
   background-color: #45a049;
-}
-
-#inventory-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
-  padding: 5px;
-  background-color: #2A2A2A;
-  border-radius: 5px;
-}
-
-.inventory-slot {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background-color: #3A3A3A;
-  border: 1px solid #4A4A4A;
-  border-radius: 3px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 10px; /* 글자 크기를 줄임 */
-  text-align: center;
-  color: #AAAAAA;
-  word-break: break-all; /* 긴 단어가 줄바꿈되도록 함 */
-  overflow: hidden; /* 내용이 넘치면 숨김 */
-}
-
-.inventory-slot.empty::after {
-  content: 'Empty';
-}
-
-.inventory-slot:not(.empty) {
-  cursor: pointer;
 }
 
 @media (max-width: 1200px) {

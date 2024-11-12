@@ -1,3 +1,5 @@
+// monster.js
+
 class Monster {
   constructor(name, ename, size, type, stats, hp, xp, cr) {
       this.name = name;

@@ -1,3 +1,5 @@
+// battle.js
+
 class Battle {
   constructor(game, player, monster, explorationGain) {
       this.game = game;
@@ -109,7 +111,7 @@ class Battle {
     } else if (attackRollDice === 1) {
       gameConsole.log("(System) 크리티컬 미스! 플레이어의 공격이 완전히 빗나갔습니다.");
     } else {
-        gameConsole.log("(System) 플레이어의 공격이 빗나갔습니다.");
+      gameConsole.log("(System) 플레이어의 공격이 빗나갔습니다.");
     }
     this.game.updateCanvas();
     this.initiativeOrder.push(this.initiativeOrder.shift());

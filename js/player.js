@@ -1,3 +1,5 @@
+// player.js
+
 class Player {
   constructor() {
     this.name = "";
@@ -395,13 +397,15 @@ class Player {
   }
 
   allocateSkillPoint(stat) {
-    if (this.skillPoints > 0 && this.stats[stat] < 20) {
+    const cost = this.stats[stat] >= 14 ? 2 : 1;
+    if (this.skillPoints = cost && this.stats[stat] < 20) {
       this.stats[stat]++;
-      this.skillPoints--;
+      this.skillPoints -= cost;
       gameConsole.log(`(System) ${this.name}의 ${stat} 능력치가 1 증가했습니다. 현재 ${stat}: ${this.stats[stat]}`);
       this.updateInfo();
       return true;
     }
+    gameConsole.log("(System) 스킬 포인트가 충분하지 않거나 능력치 최대치에 도달했습니다.");
     return false;
   }
 
@@ -523,8 +527,10 @@ class Player {
       statElement.textContent = `${this.stats[stat]} (${this.getModifier(stat)})`;
       
       const increaseBtn = statElement.nextElementSibling;
-      if (this.skillPoints > 0 && this.stats[stat] < 20) {
+      const cost = this.stats[stat] >= 14 ? 2 : 1;
+      if (this.skillPoints >= cost && this.stats[stat] < 20) {
         increaseBtn.style.display = 'inline';
+        increaseBtn.textContent = `+${cost}SP`;
       } else {
         increaseBtn.style.display = 'none';
       }

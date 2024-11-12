@@ -1,11 +1,25 @@
+/* style.css */
+
+:root {
+  --color-background: #1E1E1E;
+  --color-text: #FFFFFF;
+  --color-primary: #4CAF50;
+  --color-secondary: #2A2A2A;
+  --color-hover: #45a049;
+  --font-size-base: 16px;
+  --spacing-small: 5px;
+  --spacing-medium: 10px;
+  --spacing-large: 20px;
+}
+
 body {
   font-family: "Noto Serif KR", Arial, sans-serif;
-  font-size: 13px;
+  font-size: var(--font-size-base);
   margin: 0;
   padding: 0;
-  background-color: #1E1E1E;
-  color: #FFFFFF;
-  box-sizing: border-box; /* 추가 */
+  background-color: var(--color-background);
+  color: var(--color-text);
+  box-sizing: border-box;
 }
 
 *, *:before, *:after {
@@ -30,13 +44,14 @@ body {
 }
 
 h1 {
-  color: #4CAF50;
-  margin-top: 0px;
+  color: var(--color-primary);
+  margin-top: 0;
   text-align: center;
+  font-size: 1.5rem;
 }
 
 #gameCanvas {
-  border: 2px solid #4CAF50;
+  border: 2px solid var(--color-primary);
   max-width: 100%;
   height: auto;
 }
@@ -44,14 +59,15 @@ h1 {
 #console {
   width: 100%;
   max-width: 800px;
-  height: 200px;
-  border: 2px solid #4CAF50;
-  background-color: #2A2A2A;
-  color: #FFFFFF;
+  height: 194px;
+  border: 2px solid var(--color-primary);
+  background-color: var(--color-secondary);
+  color: var(--color-text);
   overflow-y: scroll;
-  padding: 10px;
+  padding: var(--spacing-medium);
   font-family: "Noto Serif KR", Arial, sans-serif;
-  margin-top: 10px;
+  margin-top: var(--spacing-medium);
+  font-size: 0.875rem;
 }
 
 #townButtons, #dungeonButtons {
@@ -64,19 +80,19 @@ h1 {
 }
 
 button {
-  padding: 10px 20px;
-  font-size: 16px;
+  padding: var(--spacing-medium) var(--spacing-large);
+  font-size: 1rem;
   cursor: pointer;
-  background-color: #4CAF50;
-  color: #FFFFFF;
+  background-color: var(--color-primary);
+  color: var(--color-text);
   border: none;
   border-radius: 5px;
-  transition: background-color 0.3s;
-  margin: 5px;
+  transition: background-color 0.3s ease; /* 배경색에만 트랜지션 적용 */
+  margin: var(--spacing-small);
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: var(--color-hover);
 }
 
 @media (max-width: 1200px) {

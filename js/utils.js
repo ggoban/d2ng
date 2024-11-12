@@ -27,5 +27,5 @@ window.Utils = {
   // 능력치 점수에 따른 수정치를 계산합니다.
   calculateModifier: function(score) {
     return Math.floor((score - 10) / 2);
-  }
+  },
 };
