@@ -11,6 +11,7 @@
 #player-info {
   background-color: var(--color-secondary);
   border-radius: 5px;
+  border: 1px solid #4A4A4A;
   padding: var(--spacing-medium);
   margin-bottom: var(--spacing-large);
   box-sizing: border-box;

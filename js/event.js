@@ -7,11 +7,9 @@ class EventManager {
   }
 
   startCharacterCreationEvent() {
-    gameConsole.log("DM: 우리 더2N전 마을에 방문하신 여행자여 환영합니다.");
-    gameConsole.log("DM: 던전에 입장하시려면 여행자분의 이름과 직업을 길드에 등록해야 합니다.");
-    gameConsole.log("DM: 먼저 길드로 안내 해드리겠습니다. 이후 천천히 마을을 둘러봐주세요.");
-    gameConsole.log("(System) 길드에 방문했습니다. 캐릭터 생성을 시작합니다.");
-    this.game.currentLocation = "guild";
+    gameConsole.log("던전마스터: 우리 더2N전 마을에 방문하신 여행자여 환영합니다.");
+    gameConsole.log("던전마스터: 마을에 입장하시려면 여행자분의 이름과 직업을 알려주셔야 합니다.");
+    gameConsole.log("던전마스터: 캐릭터 생성을 시작합니다.");
     this.game.updateCanvas();
     
     // 이어하기 후 버튼이 보여서 추가
@@ -74,14 +72,14 @@ class EventManager {
 
     if (name && race && characterClass) {
         this.game.player.setCharacter(name, race, characterClass);
-        gameConsole.log(`(System) ${name}(${race}/${characterClass})(이)가 생성되었습니다!`);
+        gameConsole.log(`던전마스터: ${name}(${race}/${characterClass})(이)가 생성되었습니다!`);
         const creationUI = document.getElementById('character-creation');
         if (creationUI) {
             document.body.removeChild(creationUI);
         }
         this.game.startGame();
     } else {
-        gameConsole.log("(System) 이름, 종족, 직업을 모두 선택해주세요.");
+        gameConsole.log("던전마스터: 이름, 종족, 직업을 모두 선택해주세요.");
     }
   }
 }
