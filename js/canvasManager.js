@@ -1,4 +1,4 @@
-class CanvasManager {
+export class CanvasManager {
   constructor(canvasId) {
       this.mainCanvas = document.getElementById(canvasId);
       this.mainCtx = this.mainCanvas.getContext('2d');
@@ -213,25 +213,31 @@ class CanvasManager {
 
   drawDialogueOptions(options) {
     const dialogueHeight = this.height / 3;
-    const portraitSize = dialogueHeight - 20; // 초상화 크기
-    const startY = this.height - 20; // 대화창 하단에서 약간 위로
-    const availableWidth = this.width - portraitSize - 30; // 초상화를 제외한 사용 가능한 너비
-    const optionWidth = availableWidth / options.length; // 각 옵션의 너비
+    const startY = this.height - 40;
+    const availableWidth = this.width - (dialogueHeight - 20) - 30;
+    const optionWidth = availableWidth / options.length;
     const optionHeight = 30;
 
     this.uiCtx.save();
     this.uiCtx.font = '16px Arial';
-    this.uiCtx.fillStyle = 'white';
     this.uiCtx.textAlign = 'center';
     this.uiCtx.textBaseline = 'middle';
 
     options.forEach((option, index) => {
-      const optionX = (index + 0.5) * optionWidth + 15; // 왼쪽 여백 추가
-      this.uiCtx.fillText(option.text, optionX, startY);
+      const optionX = index * optionWidth + 15;
+      const optionY = startY - optionHeight / 2;
 
-      // 옵션 영역 표시 (디버깅용, 필요 없으면 제거)
-      this.uiCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-      this.uiCtx.strokeRect(index * optionWidth + 15, startY - optionHeight / 2, optionWidth, optionHeight);
+      // 옵션 배경 그리기
+      this.uiCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      this.uiCtx.fillRect(optionX, optionY, optionWidth, optionHeight);
+
+      // 옵션 테두리 그리기
+      this.uiCtx.strokeStyle = 'white';
+      this.uiCtx.strokeRect(optionX, optionY, optionWidth, optionHeight);
+
+      // 옵션 텍스트 그리기
+      this.uiCtx.fillStyle = 'white';
+      this.uiCtx.fillText(option.text, optionX + optionWidth / 2, startY);
     });
 
     this.uiCtx.restore();

@@ -1,6 +1,6 @@
 // equipment.js
 
-class Equipment {
+export class Equipment {
   constructor(name, type, attackBonus, defenseBonus, description) {
       this.name = name;
       this.type = type; // 'weapon' 또는 'armor'
@@ -11,7 +11,7 @@ class Equipment {
 }
 
 // 무기 설정
-class Weapon {
+export class Weapon {
   constructor(name, price, damage, damageType, weight, properties) {
       this.name = name;
       this.price = price;
@@ -22,20 +22,20 @@ class Weapon {
   }
 }
 
-const WeaponType = {
+export const WeaponType = {
   SIMPLE_MELEE: 'Simple Melee',
   SIMPLE_RANGED: 'Simple Ranged',
   MARTIAL_MELEE: 'Martial Melee',
   MARTIAL_RANGED: 'Martial Ranged'
 };
 
-const DamageType = {
+export const DamageType = {
   BLUDGEONING: 'bludgeoning', // 타격
   PIERCING: 'piercing', // 관통
   SLASHING: 'slashing' // 참격
 };
 
-const WeaponProperty = {
+export const WeaponProperty = {
   VERSATILE: 'versatile', // 다용도
   LIGHT: 'light', // 경량
   HEAVY: 'heavy', // 중량
@@ -49,7 +49,7 @@ const WeaponProperty = {
 };
 
 //무기 {이름, 가격, 피해(타격, 관통, 참격), 무게, 속성}
-const weapons = {
+export const weapons = {
   // Simple Melee Weapons
   greatclub: new Weapon("Greatclub", "2sp", "1d8", DamageType.BLUDGEONING, 10, [WeaponProperty.TWO_HANDED]),
   dagger: new Weapon("Dagger", "2gp", "1d4", DamageType.PIERCING, 1, [WeaponProperty.FINESSE, WeaponProperty.LIGHT, WeaponProperty.THROWN]),
@@ -101,7 +101,7 @@ const weapons = {
 
 // 방어구 설정
 
-class Armor {
+export class Armor {
   constructor(name, type, price, ac, strength, stealth, weight) {
       this.name = name;
       this.type = type;
@@ -113,14 +113,14 @@ class Armor {
   }
 }
 
-const ArmorType = {
+export const ArmorType = {
   LIGHT: 'Light',
   MEDIUM: 'Medium',
   HEAVY: 'Heavy',
   SHIELD: 'Shield'
 };
 
-const armors = {
+export const armors = {
   // Light Armor
   padded: new Armor("Padded", ArmorType.LIGHT, "5gp", 11, 0, "Disadvantage", 8),
   leather: new Armor("Leather", ArmorType.LIGHT, "10gp", 11, 0, "", 10),

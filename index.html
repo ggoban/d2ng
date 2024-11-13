@@ -34,12 +34,12 @@
               <div id="player-stats">
                 <h3 style="text-align: center;">능력치</h3>
                 <div id="player-stats-grid">
-                  <p>근력: <span id="player-strength">10</span> <button class="stat-increase-btn" data-stat="strength" style="display:none;">+</button></p>
-                  <p>민첩: <span id="player-dexterity">10</span> <button class="stat-increase-btn" data-stat="dexterity" style="display:none;">+</button></p>
-                  <p>건강: <span id="player-constitution">10</span> <button class="stat-increase-btn" data-stat="constitution" style="display:none;">+</button></p>
-                  <p>지능: <span id="player-intelligence">10</span> <button class="stat-increase-btn" data-stat="intelligence" style="display:none;">+</button></p>
-                  <p>지혜: <span id="player-wisdom">10</span> <button class="stat-increase-btn" data-stat="wisdom" style="display:none;">+</button></p>
-                  <p>매력: <span id="player-charisma">10</span> <button class="stat-increase-btn" data-stat="charisma" style="display:none;">+</button></p>
+                  <p>근력: <span id="player-strength">10</span> <button id="increase-strength" class="stat-increase-btn" data-stat="strength" style="display:none;">+</button></p>
+                  <p>민첩: <span id="player-dexterity">10</span> <button id="increase-dexterity" class="stat-increase-btn" data-stat="dexterity" style="display:none;">+</button></p>
+                  <p>건강: <span id="player-constitution">10</span> <button id="increase-constitution" class="stat-increase-btn" data-stat="constitution" style="display:none;">+</button></p>
+                  <p>지능: <span id="player-intelligence">10</span> <button id="increase-intelligence" class="stat-increase-btn" data-stat="intelligence" style="display:none;">+</button></p>
+                  <p>지혜: <span id="player-wisdom">10</span> <button id="increase-wisdom" class="stat-increase-btn" data-stat="wisdom" style="display:none;">+</button></p>
+                  <p>매력: <span id="player-charisma">10</span> <button id="increase-charisma" class="stat-increase-btn" data-stat="charisma" style="display:none;">+</button></p>
                 </div>
               </div>
             </div>
@@ -72,17 +72,12 @@
             </div>
         </div>
     </div>
-    <script src="./js/console.js"></script>
-    <script src="./js/utils.js"></script>
-    <script src="./js/canvasManager.js"></script>
-    <script src="./js/dialogueManager.js"></script>
-    <script src="./js/item.js"></script>
-    <script src="./js/equipments.js"></script>
-    <script src="./js/spells.js"></script>
-    <script src="./js/monster.js"></script>
-    <script src="./js/player.js"></script>
-    <script src="./js/battle.js"></script>
-    <script src="./js/event.js"></script>
-    <script src="./js/game.js"></script>
+    <div id="loading-screen" style="display: none;">
+      <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>로딩 중...</p>
+      </div>
+    </div>
+    <script type='module' src="./js/main.js"></script>
 </body>
 </html>

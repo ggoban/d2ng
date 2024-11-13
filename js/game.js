@@ -1,9 +1,19 @@
 // game.js
+import { Player } from './player.js';
+import { CanvasManager } from './canvasManager.js';
+import { DialogueManager } from './dialogueManager.js';
+import { EventManager } from './event.js';
+import { Battle } from './battle.js';
+import { monsterList } from './monster.js';
+import { gameConsole } from './console.js';
+import { itemList } from './item.js';
+import { GameEventManager } from './eventManager.js';  // import 문 수정
 
-class Game {
+export class Game {
   constructor() {
     this.canvasManager = new CanvasManager("gameCanvas");
     this.dialogueManager = new DialogueManager(this);
+    this.gameEventManager = new GameEventManager(this);  // 이름 변경
     this.player = new Player();
     this.currentFloor = 0;
     this.maxFloorReached = 0;
@@ -24,23 +34,20 @@ class Game {
     this.battleButtons = document.getElementById("battleButtons");
     this.nextFloorButton = document.getElementById("nextFloorButton");
     this.returnTownButton = document.getElementById("returnTownButton");
-    this.restartButton = {
-      x: 0,
-      y: 0,
-      width: 200,
-      height: 50,
-      text: "다시 시작하기",
-    };
+    this.restartButton = {x: 0, y: 0, width: 200, height: 50,  text: "다시 시작하기",};
+    this.loadingScreen = document.getElementById('loading-screen');
   }
 
   async initialize() {
     gameConsole.clear();
-    this.setupEventListeners();
+    this.gameEventManager.setupEventListeners();  // 이름 변경
     //this.updateCanvas();
     //this.player.updateInfo();
     this.player.initializeInventory();
     this.setupBattleButtons();
+    this.showLoadingScreen();
     await this.loadAllImages();
+    this.hideLoadingScreen();
     this.updateCanvas();
     if (!this.gameStarted) {
       this.townButtons.style.display = "none";
@@ -51,6 +58,14 @@ class Game {
       );
     }
     //this.resetGame();
+  }
+
+  showLoadingScreen() {
+    this.loadingScreen.style.display = 'flex';
+  }
+
+  hideLoadingScreen() {
+      this.loadingScreen.style.display = 'none';
   }
 
   async loadAllImages() {
@@ -113,7 +128,10 @@ class Game {
     this.nextFloorButton.style.display = "none";
     this.returnTownButton.style.display = "none";
     this.battleButtons.style.display = "none";
-
+    
+    this.gameEventManager.removeAllListeners();  // 이름 변경
+    this.gameEventManager.setupEventListeners();  // 이름 변경
+    
     gameConsole.clear();
     this.updateCanvas();
   }
@@ -185,41 +203,8 @@ class Game {
 
   backToTown() {
     this.currentLocation = 'town';
+    this.dialogueManager.removeClickListener();
     this.updateCanvas();
-  }
-
-  setupEventListeners() {
-    document
-      .getElementById("innButton")
-      .addEventListener("click", () => this.goToInn());
-    document
-      .getElementById("shopButton")
-      .addEventListener("click", () => this.goToShop());
-    document
-      .getElementById("guildButton")
-      .addEventListener("click", () => this.goToGuild());
-    document
-      .getElementById("blacksmithButton")
-      .addEventListener("click", () => this.goToBlacksmith());
-    document
-      .getElementById("dungeonButton")
-      .addEventListener("click", () => this.goToDungeon());
-    document
-      .getElementById("exploreButton")
-      .addEventListener("click", () => this.explore());
-    document
-      .getElementById("nextFloorButton")
-      .addEventListener("click", () => this.goToNextFloor());
-    document
-      .getElementById("returnTownButton")
-      .addEventListener("click", () => this.returnToTown());
-    // 이벤트 리스너 설정 (game.js 또는 main.js에 추가)
-    document.querySelectorAll(".stat-increase-btn").forEach((button) => {
-      button.addEventListener("click", function () {
-        const stat = this.getAttribute("data-stat");
-        game.player.allocateSkillPoint(stat);
-      });
-    });
   }
 
   updateCanvas() {
@@ -263,28 +248,34 @@ class Game {
   goToInn() {
     this.currentLocation = "inn";
     this.dialogueManager.startDialogue('innkeeper', "안녕하세요, 여행자님. 휴식을 취하시겠습니까? 10골드에 체력을 모두 회복할 수 있습니다.");
+    this.updateCanvas();
     // 여기에 휴식 기능 추가
   }
 
   goToShop() {
     this.currentLocation = "shop";
     this.dialogueManager.startDialogue('shopkeeper', "어서오세요. 저희 상점에 오신 것을 환영합니다. 어떤 물건을 구매하시겠습니까?");
+    this.updateCanvas();
     // 여기에 상점 기능 추가
   }
 
   goToGuild() {
     this.currentLocation = "guild";
     this.dialogueManager.startDialogue('guildmaster', "모험가 길드에 오신 것을 환영합니다. 어떤 퀘스트를 받고 싶으신가요? 난이도별로 다양한 퀘스트가 준비되어 있습니다.");
+    this.updateCanvas();
     // 여기에 길드 기능 추가
   }
 
   goToBlacksmith() {
     this.currentLocation = "blacksmith";
     this.dialogueManager.startDialogue('blacksmitchmen', "대장간에 오신 것을 환영합니다. 무기를 강화하시겠습니까? 아니면 새로운 방어구를 제작하시겠습니까?");
+    this.updateCanvas();
     // 여기에 대장간 기능 추가
   }
 
   goToDungeon() {
+    if (this.inDungeon) return; // 이미 던전에 있다면 메서드 실행을 중단
+
     this.inDungeon = true;
     this.currentLocation = "dungeon";
     if (this.maxFloorReached === 0) {
@@ -449,7 +440,3 @@ class Game {
     gameConsole.log(`${item.name}을(를) 획득했습니다!`);
   }
 }
-
-// 게임 인스턴스 생성 및 초기화
-const game = new Game();
-game.initialize();

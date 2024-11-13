@@ -1,10 +1,11 @@
 // dialogueManager.js
 
-class DialogueManager {
+export class DialogueManager {
   constructor(game) {
       this.game = game;
       this.currentDialogue = null;
       this.options = [];
+      this.clickHandler = this.handleClick.bind(this);
   }
 
   startDialogue(npc, initialMessage) {
@@ -14,6 +15,7 @@ class DialogueManager {
           { text: "2. 나간다.", action: () => this.exit() }
       ];
       this.game.updateCanvas();
+      this.addClickListener();
   }
 
   greet(npc) {
@@ -39,7 +41,8 @@ class DialogueManager {
   }
 
   exit() {
-      this.game.backToTown();
+    this.removeClickListener();
+    this.game.backToTown();
   }
 
   getDialogueText() {
@@ -47,21 +50,36 @@ class DialogueManager {
     return this.currentDialogue.message;
   }
 
-  handleClick(x, y) {
+  handleClick(e) {
+    const canvas = this.game.canvasManager.getMainCanvas();
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
     const dialogueHeight = this.game.canvasManager.height / 3;
-    const portraitSize = dialogueHeight - 20;
     const startY = this.game.canvasManager.height - 40;
-    const availableWidth = this.game.canvasManager.width - portraitSize - 30;
+    const availableWidth = this.game.canvasManager.width - (dialogueHeight - 20) - 30;
     const optionWidth = availableWidth / this.options.length;
     const optionHeight = 30;
 
     if (y >= startY - optionHeight / 2 && y <= startY + optionHeight / 2) {
-        const adjustedX = x - 15; // 왼쪽 여백 고려
-        const clickedOptionIndex = Math.floor(adjustedX / optionWidth);
-        if (clickedOptionIndex >= 0 && clickedOptionIndex < this.options.length) {
-            console.log(`Option clicked: ${this.options[clickedOptionIndex].text}`); // 디버깅용
-            this.options[clickedOptionIndex].action();
-        }
+      const adjustedX = x - 15; // 왼쪽 여백 고려
+      const clickedOptionIndex = Math.floor(adjustedX / optionWidth);
+      if (clickedOptionIndex >= 0 && clickedOptionIndex < this.options.length) {
+          console.log(`Option clicked: ${this.options[clickedOptionIndex].text}`);
+          this.options[clickedOptionIndex].action();
+      }
     }
+  }
+
+  addClickListener() {
+    this.game.canvasManager.getMainCanvas().addEventListener('click', this.clickHandler);
+  }
+
+  removeClickListener() {
+      this.game.canvasManager.getMainCanvas().removeEventListener('click', this.clickHandler);
   }
 }

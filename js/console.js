@@ -15,4 +15,4 @@ class GameConsole {
   }
 }
 
-const gameConsole = new GameConsole();
+export const gameConsole = new GameConsole();

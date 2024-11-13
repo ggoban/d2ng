@@ -1,6 +1,7 @@
 // event.js
+import { gameConsole } from './console.js';
 
-class EventManager {
+export class EventManager {
   constructor(game) {
     this.game = game;
     this.createCharacterButton = null;

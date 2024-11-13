@@ -1,6 +1,7 @@
 // item.js
+import { gameConsole } from './console.js';
 
-class Item {
+export class Item {
   constructor(name, description, useEffect) {
       this.name = name;
       this.description = description;
@@ -24,6 +25,6 @@ const smallHealingPotion = new Item(
 );
 
 // 아이템 목록
-const itemList = {
+export const itemList = {
   smallHealingPotion: smallHealingPotion,
 };

@@ -1,6 +1,8 @@
 // monster.js
+import { Utils } from './utils.js';
+import { weapons, armors, ArmorType, WeaponProperty } from './equipments.js';
 
-class Monster {
+export class Monster {
   constructor(name, ename, size, type, stats, hp, xp, cr) {
       this.name = name;
       this.ename = ename;
@@ -114,7 +116,7 @@ class Monster {
 }
 
 // 몬스터 크기 열거형
-const MonsterSize = {
+export const MonsterSize = {
   TINY: '초소형',
   SMALL: '소형',
   MEDIUM: '중형',
@@ -124,7 +126,7 @@ const MonsterSize = {
 };
 
 // 몬스터 종류 열거형
-const MonsterType = {
+export const MonsterType = {
   GIANT: '거인',
   MONSTROSITY: '괴물류',
   CONSTRUCT: '구조물',
@@ -142,7 +144,7 @@ const MonsterType = {
 };
 
 // 몬스터 생성 함수
-function createMonster(name, ename, size, type, stats, hp, xp, cr, weapon, armor, shield) {
+export function createMonster(name, ename, size, type, stats, hp, xp, cr, weapon, armor, shield) {
   const monster = new Monster(name, ename, size, type, stats, hp, xp, cr);
     if (weapon) monster.equipWeapon(weapon);
     if (armor) monster.equipArmor(armor);
@@ -219,7 +221,7 @@ const troll = createMonster(
 );
 
 // 몬스터 목록
-const monsterList = {
+export const monsterList = {
   frog: frog,
   goblin: goblin,
   giantfrog: giantfrog,

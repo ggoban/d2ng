@@ -1,7 +1,7 @@
 // utils.js
+import { gameConsole } from "./console.js";
 
-// 전역 Utils 객체 생성
-window.Utils = {
+export const Utils = {
   // 주사위 굴림 함수
   rollDice: function(sides, roller = "Unknown") {
     const rollValue = Math.floor(Math.random() * sides) + 1;
@@ -28,4 +28,10 @@ window.Utils = {
   calculateModifier: function(score) {
     return Math.floor((score - 10) / 2);
   },
+};
+
+export const Constants = {
+  MAX_LEVEL: 20,
+  MAX_STAT: 20,
+  STAT_INCREASE_THRESHOLD: 14
 };

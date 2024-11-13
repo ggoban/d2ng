@@ -1,6 +1,8 @@
 // battle.js
+import { Utils } from './utils.js';
+import { gameConsole } from './console.js';
 
-class Battle {
+export class Battle {
   constructor(game, player, monster, explorationGain) {
       this.game = game;
       this.player = player;

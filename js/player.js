@@ -1,6 +1,11 @@
 // player.js
 
-class Player {
+import { Utils, Constants } from './utils.js';
+import { SpellBook } from './spells.js';
+import { weapons, armors, WeaponProperty  } from './equipments.js';
+import { gameConsole } from './console.js';
+
+export class Player {
   constructor() {
     this.name = "";
     this.race = "";
@@ -330,7 +335,7 @@ class Player {
 
   checkLevelUp() {
     let newLevel = this.level;
-    while (newLevel < 20 && this.xp >= this.xpTable[newLevel]) {
+    while (newLevel < Constants.MAX_LEVEL && this.xp >= this.xpTable[newLevel]) {
       newLevel++;
     }
 
