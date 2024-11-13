@@ -1,7 +1,7 @@
 // player.js
 
 import { Utils, Constants } from './utils.js';
-import { SpellBook } from './spells.js';
+import { SpellBook, magicMissile, cureLightWounds } from './spells.js';
 import { weapons, armors, WeaponProperty  } from './equipments.js';
 import { gameConsole } from './console.js';
 
@@ -65,6 +65,7 @@ export class Player {
     this.setInitialHp();
     this.setInitialAc(); // AC 초기화 메서드 호출
     this.setInitialEquipment(); // 새로운 메서드 호출
+    this.setInitialSpells();
     this.updateInfo();
   }
 
@@ -171,6 +172,21 @@ export class Player {
     }
   }
 
+  setInitialSpells() {
+    switch (this.class) {
+        case "Wizard":
+            this.spellBook.learnSpell(magicMissile);
+            this.spellBook.prepareSpell("매직 미사일");
+            this.spellBook.setSlots(1, 2);  // 1레벨 주문 슬롯 2개
+            break;
+        case "Cleric":
+            this.spellBook.learnSpell(cureLightWounds);
+            this.spellBook.prepareSpell("경상 치료");
+            this.spellBook.setSlots(1, 2);  // 1레벨 주문 슬롯 2개
+            break;
+    }
+  }
+
   getModifier(stat) {
     return Utils.calculateModifier(this.stats[stat]);
   }
@@ -230,9 +246,7 @@ export class Player {
 
   equipItem(itemType, item) {
     if (this[`equipped${itemType}`]) {
-      gameConsole.log(
-        `${this[`equipped${itemType}`].name}을(를) 해제했습니다.`
-      );
+      gameConsole.log(`${this[`equipped${itemType}`].name}을(를) 해제했습니다.`);
     }
     this[`equipped${itemType}`] = item;
     gameConsole.log(`${item.name}을(를) 장착했습니다.`);
@@ -242,9 +256,7 @@ export class Player {
 
   unequipItem(itemType) {
     if (this[`equipped${itemType}`]) {
-      gameConsole.log(
-        `${this[`equipped${itemType}`].name}을(를) 해제했습니다.`
-      );
+      gameConsole.log(`${this[`equipped${itemType}`].name}을(를) 해제했습니다.`);
       this[`equipped${itemType}`] = null;
       this.updateAC();
       this.updateInfo();
@@ -253,9 +265,7 @@ export class Player {
 
   getAttackDamage() {
     if (this.equippedWeapon) {
-      const [diceCount, diceSides] = this.equippedWeapon.damage
-        .split("d")
-        .map(Number);
+      const [diceCount, diceSides] = this.equippedWeapon.damage.split("d").map(Number);
       let damage = 0;
       for (let i = 0; i < diceCount; i++) {
         damage += Utils.rollDice(diceSides, this.name);
@@ -326,9 +336,7 @@ export class Player {
 
   gainExperience(xp) {
     this.xp += xp;
-    gameConsole.log(
-      `${xp} 경험치를 획득했습니다! (총 경험치: ${this.xp})`
-    );
+    gameConsole.log(`${xp} 경험치를 획득했습니다! (총 경험치: ${this.xp})`);
     this.updateInfo();
     this.checkLevelUp();
   }
@@ -345,9 +353,7 @@ export class Player {
       this.updateProficiencyBonus();
       this.increaseHitPoints(levelsGained);
       this.skillPoints += 2;
-      gameConsole.log(
-        `레벨 업! 현재 레벨: ${this.level}, 다음 필요 경험치는 ${this.xpTable[newLevel]}XP`
-      );
+      gameConsole.log(`레벨 업! 현재 레벨: ${this.level}, 다음 필요 경험치는 ${this.xpTable[newLevel]}XP`);
       gameConsole.log(`스킬 포인트 2개 획득했습니다.`);
       this.nextLevelXp = this.xpTable[newLevel];
       this.updateInfo();
@@ -359,15 +365,11 @@ export class Player {
     if (this.skillPoints >= cost && this.stats[stat] < 20) {
       this.stats[stat]++;
       this.skillPoints -= cost;
-      gameConsole.log(
-        `${this.name}의 ${stat} 능력치가 1 증가했습니다. 현재 ${stat}: ${this.stats[stat]}`
-      );
+      gameConsole.log(`${this.name}의 ${stat} 능력치가 1 증가했습니다. 현재 ${stat}: ${this.stats[stat]}`);
       this.updateInfo();
       return true;
     }
-    gameConsole.log(
-      "스킬 포인트가 충분하지 않거나 능력치 최대치에 도달했습니다."
-    );
+    gameConsole.log("스킬 포인트가 충분하지 않거나 능력치 최대치에 도달했습니다.");
     return false;
   }
 

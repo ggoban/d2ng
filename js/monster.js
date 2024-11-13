@@ -4,20 +4,20 @@ import { weapons, armors, ArmorType, WeaponProperty } from './equipments.js';
 
 export class Monster {
   constructor(name, ename, size, type, stats, hp, xp, cr) {
-      this.name = name;
-      this.ename = ename;
-      this.size = size;
-      this.type = type;
-      this.stats = stats;
-      this.hp = hp;
-      this.maxHp = hp;
-      this.xp = xp;
-      this.cr = cr;  // 도전 지수 추가
-      this.equippedWeapon = null;
-      this.equippedArmor = null;
-      this.equippedShield = null;
-      this.proficiencyBonus = Math.floor((cr - 1) / 4) + 2; // CR에 따른 숙련 보너스 계산
-      this.updateAC();
+    this.name = name;
+    this.ename = ename;
+    this.size = size;
+    this.type = type;
+    this.stats = stats;
+    this.hp = hp;
+    this.maxHp = hp;
+    this.xp = xp;
+    this.cr = cr; // 도전 지수 추가
+    this.equippedWeapon = null;
+    this.equippedArmor = null;
+    this.equippedShield = null;
+    this.proficiencyBonus = Math.floor((cr - 1) / 4) + 2; // CR에 따른 숙련 보너스 계산
+    this.updateAC();
   }
 
   equipWeapon(weapon) {
@@ -25,46 +25,46 @@ export class Monster {
   }
 
   equipArmor(armor) {
-      this.equippedArmor = armor;
-      this.updateAC();
+    this.equippedArmor = armor;
+    this.updateAC();
   }
 
   equipShield(shield) {
-      this.equippedShield = shield;
-      this.updateAC();
+    this.equippedShield = shield;
+    this.updateAC();
   }
 
   updateAC() {
     let baseAC = 10;
-    const dexMod = this.getModifier('dexterity');
+    const dexMod = this.getModifier("dexterity");
 
     if (this.equippedArmor) {
-        switch (this.equippedArmor.type) {
-            case ArmorType.LIGHT:
-                baseAC = this.equippedArmor.ac + dexMod;
-                break;
-            case ArmorType.MEDIUM:
-                baseAC = this.equippedArmor.ac + Math.min(dexMod, 2);
-                break;
-            case ArmorType.HEAVY:
-                baseAC = this.equippedArmor.ac;
-                break;
-        }
+      switch (this.equippedArmor.type) {
+        case ArmorType.LIGHT:
+          baseAC = this.equippedArmor.ac + dexMod;
+          break;
+        case ArmorType.MEDIUM:
+          baseAC = this.equippedArmor.ac + Math.min(dexMod, 2);
+          break;
+        case ArmorType.HEAVY:
+          baseAC = this.equippedArmor.ac;
+          break;
+      }
     } else {
-        baseAC += dexMod;
+      baseAC += dexMod;
     }
 
     if (this.equippedShield) {
-        baseAC += this.equippedShield.ac;
+      baseAC += this.equippedShield.ac;
     }
 
     this.ac = baseAC;
-  }  
+  }
 
   getModifier(stat) {
     return Utils.calculateModifier(this.stats[stat]);
   }
-  
+
   resetHp() {
     this.hp = this.maxHp;
   }
@@ -72,37 +72,47 @@ export class Monster {
   getAttackBonus() {
     let bonus = this.proficiencyBonus;
     if (this.equippedWeapon) {
-        if (this.equippedWeapon.properties.includes(WeaponProperty.FINESSE)) {
-            bonus += Math.max(this.getModifier('strength'), this.getModifier('dexterity'));
-        } else if (this.equippedWeapon.properties.includes(WeaponProperty.AMMUNITION)) {
-            bonus += this.getModifier('dexterity');
-        } else {
-            bonus += this.getModifier('strength');
-        }
+      if (this.equippedWeapon.properties.includes(WeaponProperty.FINESSE)) {
+        bonus += Math.max(
+          this.getModifier("strength"),
+          this.getModifier("dexterity")
+        );
+      } else if (
+        this.equippedWeapon.properties.includes(WeaponProperty.AMMUNITION)
+      ) {
+        bonus += this.getModifier("dexterity");
+      } else {
+        bonus += this.getModifier("strength");
+      }
     } else {
-        bonus += this.getModifier('strength');
+      bonus += this.getModifier("strength");
     }
     return bonus;
   }
 
   getAttackDamage() {
     if (this.equippedWeapon) {
-        const [diceCount, diceSides] = this.equippedWeapon.damage.split('d').map(Number);
-        let damage = 0;
-        for (let i = 0; i < diceCount; i++) {
-            damage += Utils.rollDice(diceSides, this.name);
-        }
-        if (this.equippedWeapon.properties.includes(WeaponProperty.FINESSE)) {
-            damage += Math.max(this.getModifier('strength'), this.getModifier('dexterity'));
-        } else if (this.equippedWeapon.properties.includes(WeaponProperty.AMMUNITION)) {
-            damage += this.getModifier('dexterity');
-        } else {
-            damage += this.getModifier('strength');
-        }
-        return Math.max(1, damage);
+      const [diceCount, diceSides] = this.equippedWeapon.damage.split("d").map(Number);
+      let damage = 0;
+      for (let i = 0; i < diceCount; i++) {
+        damage += Utils.rollDice(diceSides, this.name);
+      }
+      if (this.equippedWeapon.properties.includes(WeaponProperty.FINESSE)) {
+        damage += Math.max(
+          this.getModifier("strength"),
+          this.getModifier("dexterity")
+        );
+      } else if (
+        this.equippedWeapon.properties.includes(WeaponProperty.AMMUNITION)
+      ) {
+        damage += this.getModifier("dexterity");
+      } else {
+        damage += this.getModifier("strength");
+      }
+      return Math.max(1, damage);
     }
     // 맨손 공격
-    return Math.max(1, Utils.rollDice(4, this.name) + this.getModifier('strength'));
+    return Math.max(1, Utils.rollDice(4, this.name) + this.getModifier("strength"));
   }
 
   takeDamage(amount) {
@@ -111,7 +121,7 @@ export class Monster {
   }
 
   getDefenseBonus() {
-      return this.armor ? this.armor.defenseBonus : 0;
+    return this.armor ? this.armor.defenseBonus : 0;
   }
 }
 
@@ -153,7 +163,7 @@ export function createMonster(name, ename, size, type, stats, hp, xp, cr, weapon
 }
 
 // 몇 가지 예시 몬스터
-// 숫자는 hp, xp, cr 순
+// 숫자는 hp, xp, cr 순이고 장비는 무기, 방어구, 방패
 const frog = createMonster(
   "개구리", 'frog', MonsterSize.TINY, MonsterType.BEAST,
   { strength: 1, dexterity: 13, constitution: 8, intelligence: 1, wisdom: 8, charisma: 3 },
@@ -182,8 +192,7 @@ const brownbear = createMonster(
   { strength: 19, dexterity: 10, constitution: 16, intelligence: 2, wisdom: 13, charisma: 7 },
   34, 200, 1,
   weapons.claws, // 특별한 "무기"로 발톱을 사용
-  null,
-  null
+  null, null
 );
 
 const owlbear = createMonster(
@@ -192,8 +201,7 @@ const owlbear = createMonster(
   { strength: 20, dexterity: 12, constitution: 17, intelligence: 3, wisdom: 12, charisma: 7 },
   59, 700, 3,
   weapons.claws, // 특별한 "무기"로 발톱을 사용
-  null,
-  null
+  null, null
 );
 
 const hobgoblin = createMonster(

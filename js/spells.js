@@ -1,67 +1,71 @@
 // spells.js
-import { gameConsole } from './console.js';
-
 export class Spell {
-  constructor(name, level, castingTime, range, components, duration, description, effect) {
+  constructor(name, level, effect, description) {
       this.name = name;
       this.level = level;
-      this.castingTime = castingTime;
-      this.range = range;
-      this.components = components;
-      this.duration = duration;
-      this.description = description;
       this.effect = effect;
-  }
-
-  cast(caster, target) {
-      // 주문 시전 로직
-      gameConsole.log(`${caster.getName()}이(가) ${this.name} 주문을 시전합니다.`);
-      this.effect(caster, target);
+      this.description = description;
   }
 }
-
-export const spellList = {
-  // 0레벨 주문 (캔트립)
-  lightCantrip: new Spell(
-      "빛", 0, "1 행동", "접촉", "V, M (반딧불이 또는 빛나는 이끼)", "1시간", "당신이 터치한 물체에서 빛이 나옵니다.",
-      (caster, target) => {
-          gameConsole.log(`${target}에 빛이 밝혀집니다.`);
-          // 빛 효과 구현
-      }
-  ),
-
-  // 1레벨 주문
-  magicMissile: new Spell(
-      "마법 화살", 1, "1 행동", "120피트", "V, S", "즉시", "3개의 빛나는 화살을 만들어 목표물에게 발사합니다.",
-      (caster, target) => {
-          const damage = 3 * (Utils.rollDice(4) + 1);
-          target.takeDamage(damage);
-          gameConsole.log(`${target.getName()}에게 ${damage}의 피해를 입혔습니다.`);
-      }
-  ),
-
-  // 추가 주문들...
-};
 
 export class SpellBook {
   constructor() {
-      this.knownSpells = [];
+    this.knownSpells = new Map();
+    this.preparedSpells = new Map();
+    this.slots = new Map();
   }
 
-  learnSpell(spellName) {
-      if (spellList[spellName] && !this.knownSpells.includes(spellName)) {
-          this.knownSpells.push(spellName);
-          gameConsole.log(`${spellName} 주문을 배웠습니다.`);
-      } else {
-          gameConsole.log("해당 주문을 배울 수 없습니다.");
-      }
+  learnSpell(spell) {
+    this.knownSpells.set(spell.name, spell);
   }
 
-  castSpell(spellName, caster, target) {
-      if (this.knownSpells.includes(spellName)) {
-          spellList[spellName].cast(caster, target);
-      } else {
-          gameConsole.log("알지 못하는 주문입니다.");
-      }
+  prepareSpell(spellName) {
+    const spell = this.knownSpells.get(spellName);
+    if (spell) {
+      this.preparedSpells.set(spellName, spell);
+    }
+  }
+
+  unprepareSpell(spellName) {
+    this.preparedSpells.delete(spellName);
+  }
+
+  setSlots(level, count) {
+    this.slots.set(level, count);
+  }
+
+  useSlot(level) {
+    if (this.slots.has(level) && this.slots.get(level) > 0) {
+      this.slots.set(level, this.slots.get(level) - 1);
+      return true;
+    }
+    return false;
+  }
+
+  resetSlots() {
+    for (let [level, count] of this.slots) {
+      this.slots.set(level, count);
+    }
+  }
+
+  getPreparedSpells() {
+    return Array.from(this.preparedSpells.values());
+  }
+
+  getAvailableSlots() {
+    return Array.from(this.slots.entries());
   }
 }
+
+// 예시 주문들
+export const magicMissile = new Spell("매직 미사일", 1, (caster, target) => {
+  const damage = 3 + Math.floor(caster.stats.intelligence / 2);
+  target.takeDamage(damage);
+  return `${caster.name}의 매직 미사일! ${target.name}에게 ${damage}의 피해를 입혔습니다.`;
+}, "실패하지 않는 마법 화살을 발사합니다.");
+
+export const cureLightWounds = new Spell("경상 치료", 1, (caster, target) => {
+  const healAmount = 5 + Math.floor(caster.stats.wisdom / 2);
+  target.heal(healAmount);
+  return `${caster.name}의 경상 치료! ${target.name}의 체력을 ${healAmount} 회복했습니다.`;
+}, "가벼운 상처를 치료합니다.");

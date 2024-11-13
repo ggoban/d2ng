@@ -51,19 +51,13 @@ export class EventManager {
 
     // 이전 이벤트 리스너 제거
     if (this.createCharacterButton) {
-      this.createCharacterButton.removeEventListener(
-        "click",
-        this.handleCreateCharacter
-      );
+      this.createCharacterButton.removeEventListener("click", this.handleCreateCharacter);
     }
 
     // 새 이벤트 리스너 등록
     this.createCharacterButton = document.getElementById("create-character");
     this.handleCreateCharacter = this.handleCreateCharacter.bind(this);
-    this.createCharacterButton.addEventListener(
-      "click",
-      this.handleCreateCharacter
-    );
+    this.createCharacterButton.addEventListener("click", this.handleCreateCharacter);
   }
   
   handleCreateCharacter() {

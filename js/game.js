@@ -7,13 +7,13 @@ import { Battle } from './battle.js';
 import { monsterList } from './monster.js';
 import { gameConsole } from './console.js';
 import { itemList } from './item.js';
-import { GameEventManager } from './eventManager.js';  // import 문 수정
+import { GameEventManager } from './eventManager.js';  // 이건 DOM 이벤트 리스너 관리 매니저인데 게임 이벤트 매니저랑 겹치네...
 
 export class Game {
   constructor() {
     this.canvasManager = new CanvasManager("gameCanvas");
     this.dialogueManager = new DialogueManager(this);
-    this.gameEventManager = new GameEventManager(this);  // 이름 변경
+    this.gameEventManager = new GameEventManager(this);  // DOM 이벤트 리스너
     this.player = new Player();
     this.currentFloor = 0;
     this.maxFloorReached = 0;
@@ -40,9 +40,7 @@ export class Game {
 
   async initialize() {
     gameConsole.clear();
-    this.gameEventManager.setupEventListeners();  // 이름 변경
-    //this.updateCanvas();
-    //this.player.updateInfo();
+    this.gameEventManager.setupEventListeners();  // DOM 이벤트 리스너
     this.player.initializeInventory();
     this.setupBattleButtons();
     this.showLoadingScreen();
@@ -53,11 +51,8 @@ export class Game {
       this.townButtons.style.display = "none";
       this.eventManager.startCharacterCreationEvent();
     } else {
-      gameConsole.log(
-        "더2N전에 오신 것을 환영합니다!"
-      );
+      gameConsole.log("더2N전에 오신 것을 환영합니다!");
     }
-    //this.resetGame();
   }
 
   showLoadingScreen() {
@@ -140,9 +135,7 @@ export class Game {
     this.gameStarted = true;
     this.townButtons.style.display = "flex";
     this.currentLocation = "town";
-    gameConsole.log(
-      `${this.player.name}님의 앞으로의 여정에 ···의 축복이 함께하길...`
-    );
+    gameConsole.log(`${this.player.name}님의 앞으로의 여정에 ···의 축복이 함께하길...`);
     this.updateCanvas();
     this.addTestItem();
     // 여기에 게임 시작 후 추가적인 초기화 로직을 넣을 수 있습니다.
@@ -159,22 +152,17 @@ export class Game {
 
   showRestartButton() {
     // 버튼 위치 업데이트
-    this.restartButton.x =
-      this.canvasManager.width / 2 - this.restartButton.width / 2;
+    this.restartButton.x = this.canvasManager.width / 2 - this.restartButton.width / 2;
     this.restartButton.y = this.canvasManager.height / 2 + 25;
 
     // 이전 이벤트 리스너 제거
     if (this.canvasClickListener) {
-      this.canvasManager
-        .getMainCanvas()
-        .removeEventListener("click", this.canvasClickListener);
+      this.canvasManager.getMainCanvas().removeEventListener("click", this.canvasClickListener);
     }
 
     // 새 이벤트 리스너 추가
     this.canvasClickListener = this.handleCanvasClick.bind(this);
-    this.canvasManager
-      .getMainCanvas()
-      .addEventListener("click", this.canvasClickListener);
+    this.canvasManager.getMainCanvas().addEventListener("click", this.canvasClickListener);
 
     this.updateCanvas(); // 캔버스 업데이트 호출
   }
@@ -231,10 +219,7 @@ export class Game {
           break;
         case "dungeon":
           if (this.isInBattle && this.currentBattle) {
-            this.canvasManager.drawBattleScene(
-              this.player,
-              this.currentBattle.monster
-            );
+            this.canvasManager.drawBattleScene(this.player, this.currentBattle.monster);
           } else {
             this.canvasManager.drawExplorationProgress(this.exploration);
           }
@@ -281,14 +266,10 @@ export class Game {
     if (this.maxFloorReached === 0) {
       this.currentFloor = 1;
       this.maxFloorReached = 1;
-      gameConsole.log(
-        "던전에 처음 입장했습니다. 1층부터 탐험을 시작하세요!"
-      );
+      gameConsole.log("던전에 처음 입장했습니다. 1층부터 탐험을 시작하세요!");
     } else {
       this.currentFloor = this.maxFloorReached;
-      gameConsole.log(
-        `이전에 도달한 ${this.maxFloorReached}층부터 탐험을 재개합니다.`
-      );
+      gameConsole.log(`이전에 도달한 ${this.maxFloorReached}층부터 탐험을 재개합니다.`);
     }
     this.exploration = 0;
     this.updateCanvas();
@@ -316,12 +297,7 @@ export class Game {
   startBattle(explorationGain) {
     this.isInBattle = true;
     const monster = this.getRandomMonster();
-    this.currentBattle = new Battle(
-      this,
-      this.player,
-      monster,
-      explorationGain
-    );
+    this.currentBattle = new Battle(this, this.player, monster, explorationGain);
     this.currentBattle.start();
     this.exploreButton.style.display = "none";
     this.battleButtons.style.display = "block";
@@ -333,9 +309,7 @@ export class Game {
     if (this.exploration >= 100) {
       this.exploration = 100;
     }
-    gameConsole.log(
-      `탐험을 진행했습니다. 탐사도가 ${explorationGain}% 증가했습니다.`
-    );
+    gameConsole.log(`탐험을 진행했습니다. 탐사도가 ${explorationGain}% 증가했습니다.`);
     this.updateExplorationButtons();
     this.updateCanvas();
   }
@@ -353,50 +327,35 @@ export class Game {
   }
 
   attack() {
-    if (
-      this.currentBattle &&
-      this.currentBattle.initiativeOrder[0] === this.player
-    ) {
+    if (this.currentBattle && this.currentBattle.initiativeOrder[0] === this.player) {
       this.currentBattle.playerAttack();
     }
   }
 
   flee() {
-    if (
-      this.currentBattle &&
-      this.currentBattle.initiativeOrder[0] === this.player
-    ) {
+    if (this.currentBattle && this.currentBattle.initiativeOrder[0] === this.player) {
       this.currentBattle.playerFlee();
     }
   }
 
   getRandomMonster() {
     const appropriateMonsters = Object.values(monsterList).filter((monster) => {
-      return (
-        monster.cr <= this.currentFloor / 2 &&
-        monster.cr >= this.currentFloor / 4
-      );
+      return (monster.cr <= this.currentFloor / 2 && monster.cr >= this.currentFloor / 4);
     });
 
     if (appropriateMonsters.length === 0) {
       return Object.values(monsterList)[0]; // 적절한 몬스터가 없으면 첫 번째 몬스터 반환
     }
 
-    return appropriateMonsters[
-      Math.floor(Math.random() * appropriateMonsters.length)
-    ];
+    return appropriateMonsters[Math.floor(Math.random() * appropriateMonsters.length)];
   }
 
   goToNextFloor() {
     this.currentFloor++;
-    if (this.currentFloor > this.maxFloorReached) {
-      this.maxFloorReached = this.currentFloor;
-    }
+    if (this.currentFloor > this.maxFloorReached) this.maxFloorReached = this.currentFloor;
     this.exploration = 0;
     this.updateCanvas();
-    gameConsole.log(
-      `던전 ${this.currentFloor}층으로 올라왔습니다. 새로운 탐험을 시작하세요!`
-    );
+    gameConsole.log(`던전 ${this.currentFloor}층으로 올라왔습니다. 새로운 탐험을 시작하세요!`);
     this.exploreButton.style.display = "inline";
     this.nextFloorButton.style.display = "none";
     this.returnTownButton.style.display = "none";
@@ -404,15 +363,11 @@ export class Game {
 
   returnToTown() {
     this.currentFloor++;
-    if (this.currentFloor > this.maxFloorReached) {
-      this.maxFloorReached = this.currentFloor;
-    }
+    if (this.currentFloor > this.maxFloorReached) this.maxFloorReached = this.currentFloor;
     this.inDungeon = false;
     this.currentLocation = "town";
     this.updateCanvas();
-    gameConsole.log(
-      `마을로 귀환했습니다. 던전 ${this.maxFloorReached}층 끝까지 도달했습니다.`
-    );
+    gameConsole.log(`마을로 귀환했습니다. 던전 ${this.maxFloorReached}층 끝까지 도달했습니다.`);
     this.townButtons.style.display = "flex";
     this.dungeonButtons.style.display = "none";
   }
@@ -425,9 +380,7 @@ export class Game {
       this.player.addItem(potion);
       this.player.addItem(potion);
       this.player.addItem(potion);
-      gameConsole.log(
-        `당신의 여정을 축복하며 ${potion.name}을 선물로 드리겠습니다.`
-      );
+      gameConsole.log(`당신의 여정을 축복하며 ${potion.name}을 선물로 드리겠습니다.`);
       gameConsole.log(`${potion.name}을 인벤토리에 추가했습니다.`);
     } else {
       gameConsole.log("인벤토리가 가득 찼습니다.");

@@ -36,7 +36,11 @@ export class CanvasManager {
   }
 
   drawBackground(location, floor = null) {
-      if(location === 'Battle') location = 'dungeon';
+      let displayText = location.charAt(0).toUpperCase() + location.slice(1);
+      if(location === 'Battle') {
+        location = 'dungeon';
+        displayText = 'battle'
+      }
       const image = this.getImage(location);
       if (image) {
           this.backgroundCtx.drawImage(image, 0, 0, this.width, this.height);
@@ -53,7 +57,6 @@ export class CanvasManager {
       this.backgroundCtx.font = '30px Arial';
       this.backgroundCtx.textAlign = 'center';
       this.backgroundCtx.textBaseline = 'middle';
-      let displayText = location.charAt(0).toUpperCase() + location.slice(1);
       if (floor !== null && location.toLowerCase() !== 'battle') {
           displayText += ` ${floor}F`;
       }
