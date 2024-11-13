@@ -107,7 +107,7 @@ class CanvasManager {
   drawBattleScene(player, monster) {
       this.clear();
       this.drawBackground('Battle');
-      this.drawPlayer(player);
+      //this.drawPlayer(player);
       this.drawMonster(monster);
   }
 
@@ -212,17 +212,26 @@ class CanvasManager {
   }
 
   drawDialogueOptions(options) {
-    const startY = this.height - 70; // 위치 조정
+    const dialogueHeight = this.height / 3;
+    const portraitSize = dialogueHeight - 20; // 초상화 크기
+    const startY = this.height - 20; // 대화창 하단에서 약간 위로
+    const availableWidth = this.width - portraitSize - 30; // 초상화를 제외한 사용 가능한 너비
+    const optionWidth = availableWidth / options.length; // 각 옵션의 너비
     const optionHeight = 30;
 
     this.uiCtx.save();
     this.uiCtx.font = '16px Arial';
     this.uiCtx.fillStyle = 'white';
-    this.uiCtx.textAlign = 'left';
-    this.uiCtx.textBaseline = 'top';
+    this.uiCtx.textAlign = 'center';
+    this.uiCtx.textBaseline = 'middle';
 
     options.forEach((option, index) => {
-        this.uiCtx.fillText(option.text, 20, startY + index * optionHeight);
+      const optionX = (index + 0.5) * optionWidth + 15; // 왼쪽 여백 추가
+      this.uiCtx.fillText(option.text, optionX, startY);
+
+      // 옵션 영역 표시 (디버깅용, 필요 없으면 제거)
+      this.uiCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      this.uiCtx.strokeRect(index * optionWidth + 15, startY - optionHeight / 2, optionWidth, optionHeight);
     });
 
     this.uiCtx.restore();

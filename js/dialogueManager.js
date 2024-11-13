@@ -39,7 +39,7 @@ class DialogueManager {
   }
 
   exit() {
-      this.game.returnToTown();
+      this.game.backToTown();
   }
 
   getDialogueText() {
@@ -48,15 +48,20 @@ class DialogueManager {
   }
 
   handleClick(x, y) {
+    const dialogueHeight = this.game.canvasManager.height / 3;
+    const portraitSize = dialogueHeight - 20;
+    const startY = this.game.canvasManager.height - 40;
+    const availableWidth = this.game.canvasManager.width - portraitSize - 30;
+    const optionWidth = availableWidth / this.options.length;
     const optionHeight = 30;
-    const startY = this.game.canvasManager.height - 70; // drawDialogueOptions와 일치하도록 수정
-    
-    this.options.forEach((option, index) => {
-        const optionY = startY + index * optionHeight;
-        if (y >= optionY && y < optionY + optionHeight) {
-            console.log(`Option clicked: ${option.text}`); // 디버깅용
-            option.action();
+
+    if (y >= startY - optionHeight / 2 && y <= startY + optionHeight / 2) {
+        const adjustedX = x - 15; // 왼쪽 여백 고려
+        const clickedOptionIndex = Math.floor(adjustedX / optionWidth);
+        if (clickedOptionIndex >= 0 && clickedOptionIndex < this.options.length) {
+            console.log(`Option clicked: ${this.options[clickedOptionIndex].text}`); // 디버깅용
+            this.options[clickedOptionIndex].action();
         }
-    });
+    }
   }
 }

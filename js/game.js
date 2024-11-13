@@ -47,7 +47,7 @@ class Game {
       this.eventManager.startCharacterCreationEvent();
     } else {
       gameConsole.log(
-        "던전마스터: 더2N전에 오신 것을 환영합니다!"
+        "더2N전에 오신 것을 환영합니다!"
       );
     }
     //this.resetGame();
@@ -123,7 +123,7 @@ class Game {
     this.townButtons.style.display = "flex";
     this.currentLocation = "town";
     gameConsole.log(
-      `던전마스터: ${this.player.name}님의 앞으로의 여정에 ···의 축복이 함께하길...`
+      `${this.player.name}님의 앞으로의 여정에 ···의 축복이 함께하길...`
     );
     this.updateCanvas();
     this.addTestItem();
@@ -132,7 +132,7 @@ class Game {
 
   gameOver() {
     if (this.isGameOver) return;
-    gameConsole.log("던전마스터: 게임 오버! 캐릭터가 사망했습니다.");
+    gameConsole.log("게임 오버! 캐릭터가 사망했습니다.");
     this.player.reset(); // player reset 호출 추가
     this.isGameOver = true; // 게임 오버 상태 추가
     this.updateCanvas();
@@ -183,7 +183,7 @@ class Game {
     }
   }
 
-  returnToTown() {
+  backToTown() {
     this.currentLocation = 'town';
     this.updateCanvas();
   }
@@ -291,12 +291,12 @@ class Game {
       this.currentFloor = 1;
       this.maxFloorReached = 1;
       gameConsole.log(
-        "던전마스터: 던전에 처음 입장했습니다. 1층부터 탐험을 시작하세요!"
+        "던전에 처음 입장했습니다. 1층부터 탐험을 시작하세요!"
       );
     } else {
       this.currentFloor = this.maxFloorReached;
       gameConsole.log(
-        `던전마스터: 이전에 도달한 ${this.maxFloorReached}층부터 탐험을 재개합니다.`
+        `이전에 도달한 ${this.maxFloorReached}층부터 탐험을 재개합니다.`
       );
     }
     this.exploration = 0;
@@ -343,7 +343,7 @@ class Game {
       this.exploration = 100;
     }
     gameConsole.log(
-      `던전마스터: 탐험을 진행했습니다. 탐사도가 ${explorationGain}% 증가했습니다.`
+      `탐험을 진행했습니다. 탐사도가 ${explorationGain}% 증가했습니다.`
     );
     this.updateExplorationButtons();
     this.updateCanvas();
@@ -404,7 +404,7 @@ class Game {
     this.exploration = 0;
     this.updateCanvas();
     gameConsole.log(
-      `던전마스터: 던전 ${this.currentFloor}층으로 올라왔습니다. 새로운 탐험을 시작하세요!`
+      `던전 ${this.currentFloor}층으로 올라왔습니다. 새로운 탐험을 시작하세요!`
     );
     this.exploreButton.style.display = "inline";
     this.nextFloorButton.style.display = "none";
@@ -420,7 +420,7 @@ class Game {
     this.currentLocation = "town";
     this.updateCanvas();
     gameConsole.log(
-      `던전마스터: 마을로 귀환했습니다. 던전 ${this.maxFloorReached}층 끝까지 도달했습니다.`
+      `마을로 귀환했습니다. 던전 ${this.maxFloorReached}층 끝까지 도달했습니다.`
     );
     this.townButtons.style.display = "flex";
     this.dungeonButtons.style.display = "none";
@@ -435,18 +435,18 @@ class Game {
       this.player.addItem(potion);
       this.player.addItem(potion);
       gameConsole.log(
-        `던전마스터: 당신의 여정을 축복하며 ${potion.name}을 선물로 드리겠습니다.`
+        `당신의 여정을 축복하며 ${potion.name}을 선물로 드리겠습니다.`
       );
-      gameConsole.log(`던전마스터: ${potion.name}을 인벤토리에 추가했습니다.`);
+      gameConsole.log(`${potion.name}을 인벤토리에 추가했습니다.`);
     } else {
-      gameConsole.log("던전마스터: 인벤토리가 가득 찼습니다.");
+      gameConsole.log("인벤토리가 가득 찼습니다.");
     }
   }
 
   // 예시: 아이템 획득 메서드
   addItemToInventory(item) {
     this.player.addItem(item);
-    gameConsole.log(`던전마스터: ${item.name}을(를) 획득했습니다!`);
+    gameConsole.log(`${item.name}을(를) 획득했습니다!`);
   }
 }
 

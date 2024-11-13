@@ -226,11 +226,11 @@ class Player {
   equipItem(itemType, item) {
     if (this[`equipped${itemType}`]) {
       gameConsole.log(
-        `던전마스터: ${this[`equipped${itemType}`].name}을(를) 해제했습니다.`
+        `${this[`equipped${itemType}`].name}을(를) 해제했습니다.`
       );
     }
     this[`equipped${itemType}`] = item;
-    gameConsole.log(`던전마스터: ${item.name}을(를) 장착했습니다.`);
+    gameConsole.log(`${item.name}을(를) 장착했습니다.`);
     this.updateAC();
     this.updateInfo();
   }
@@ -238,7 +238,7 @@ class Player {
   unequipItem(itemType) {
     if (this[`equipped${itemType}`]) {
       gameConsole.log(
-        `던전마스터: ${this[`equipped${itemType}`].name}을(를) 해제했습니다.`
+        `${this[`equipped${itemType}`].name}을(를) 해제했습니다.`
       );
       this[`equipped${itemType}`] = null;
       this.updateAC();
@@ -322,7 +322,7 @@ class Player {
   gainExperience(xp) {
     this.xp += xp;
     gameConsole.log(
-      `던전마스터: ${xp} 경험치를 획득했습니다! (총 경험치: ${this.xp})`
+      `${xp} 경험치를 획득했습니다! (총 경험치: ${this.xp})`
     );
     this.updateInfo();
     this.checkLevelUp();
@@ -341,9 +341,9 @@ class Player {
       this.increaseHitPoints(levelsGained);
       this.skillPoints += 2;
       gameConsole.log(
-        `던전마스터: 레벨 업! 현재 레벨: ${this.level}, 다음 필요 경험치는 ${this.xpTable[newLevel]}XP`
+        `레벨 업! 현재 레벨: ${this.level}, 다음 필요 경험치는 ${this.xpTable[newLevel]}XP`
       );
-      gameConsole.log(`던전마스터: 스킬 포인트 2개 획득했습니다.`);
+      gameConsole.log(`스킬 포인트 2개 획득했습니다.`);
       this.nextLevelXp = this.xpTable[newLevel];
       this.updateInfo();
     }
@@ -355,13 +355,13 @@ class Player {
       this.stats[stat]++;
       this.skillPoints -= cost;
       gameConsole.log(
-        `던전마스터: ${this.name}의 ${stat} 능력치가 1 증가했습니다. 현재 ${stat}: ${this.stats[stat]}`
+        `${this.name}의 ${stat} 능력치가 1 증가했습니다. 현재 ${stat}: ${this.stats[stat]}`
       );
       this.updateInfo();
       return true;
     }
     gameConsole.log(
-      "던전마스터: 스킬 포인트가 충분하지 않거나 능력치 최대치에 도달했습니다."
+      "스킬 포인트가 충분하지 않거나 능력치 최대치에 도달했습니다."
     );
     return false;
   }

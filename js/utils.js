@@ -5,7 +5,7 @@ window.Utils = {
   // 주사위 굴림 함수
   rollDice: function(sides, roller = "Unknown") {
     const rollValue = Math.floor(Math.random() * sides) + 1;
-    gameConsole.log('던전마스터: '+`${roller}이(가) `+sides+`면 주사위를 굴립니다. 결과: `+rollValue);
+    gameConsole.log(`${roller}이(가) `+sides+`면 주사위를 굴립니다. 결과: `+rollValue);
     return rollValue;
   },
 
