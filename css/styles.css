@@ -1,17 +1,24 @@
-/* style.css */
-
+/* Global Variables */
 :root {
   --color-background: #1E1E1E;
   --color-text: #FFFFFF;
   --color-primary: #4CAF50;
   --color-secondary: #2A2A2A;
   --color-hover: #45a049;
+  --color-border: #4A4A4A;
   --font-size-base: 16px;
+  --font-size-vsmall: 0.700rem;
+  --font-size-small: 0.875rem;
+  --font-size-medium: 1rem;
+  --font-size-large: 1.2rem;
   --spacing-small: 5px;
   --spacing-medium: 10px;
   --spacing-large: 20px;
+  --border-radius: 5px;
+  --transition-speed: 0.3s;
 }
 
+/* Global Styles */
 body {
   font-family: "Noto Serif KR", Arial, sans-serif;
   font-size: var(--font-size-base);
@@ -20,14 +27,70 @@ body {
   background-color: var(--color-background);
   color: var(--color-text);
   box-sizing: border-box;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 *, *:before, *:after {
-  box-sizing: inherit; /* 추가 */
+  box-sizing: inherit;
 }
 
+/* Layout */
+#game-container {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+#main-content {
+  flex-grow: 1;
+  padding: var(--spacing-large);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.sidebar {
+  width: 300px;
+  background-color: var(--color-secondary);
+  padding: var(--spacing-large);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Typography */
+h1 {
+  color: var(--color-primary);
+  margin-top: 0;
+  text-align: center;
+  font-size: var(--font-size-large);
+}
+
+/* Components */
+.button {
+  margin: var(--spacing-small);
+  padding: var(--spacing-medium) var(--spacing-large);
+  font-size: var(--font-size-medium);
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+}
+
+.button:hover {
+  background-color: var(--color-hover);
+}
+
+/* Loading Screen */
 #loading-screen {
-  position: fixed;  /* absolute 대신 fixed 사용 */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -55,51 +118,23 @@ body {
   animation: spin 2s linear infinite;
 }
 
-.loading-container p {
-  color: white;
-  margin-top: 20px;
-  font-size: 18px;
-}
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-#game-container {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  min-height: 100vh;
-  overflow-x: hidden; /* 추가 */
-}
-
-#main-content {
-  flex-grow: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 0; /* 추가: flexbox 내에서 축소될 수 있도록 함 */
-}
-
-h1 {
-  color: var(--color-primary);
-  margin-top: 0;
-  text-align: center;
-  font-size: 1.5rem;
-}
-
+/* Game Canvas */
 #gameCanvas {
   border: 2px solid var(--color-primary);
   max-width: 100%;
   height: auto;
 }
 
+/* Console */
 #console {
   width: 100%;
   max-width: 800px;
-  height: 194px;
+  height: 134px;
   border: 2px solid var(--color-primary);
   background-color: var(--color-secondary);
   color: var(--color-text);
@@ -107,67 +142,173 @@ h1 {
   padding: var(--spacing-medium);
   font-family: "Noto Serif KR", Arial, sans-serif;
   margin-top: var(--spacing-medium);
-  font-size: 0.875rem;
+  font-size: var(--font-size-small);
 }
 
-#townButtons, #dungeonButtons {
+/* Action Buttons */
+#action-buttons {
   width: 100%;
   max-width: 800px;
+  margin: var(--spacing-medium) auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#townButtons, #dungeonButtons, #battleButtons {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 10px;
+  width: 100%;
+  text-align: center;
 }
 
-button {
+#action-buttons button {
+  margin: var(--spacing-small);
   padding: var(--spacing-medium) var(--spacing-large);
-  font-size: 1rem;
-  cursor: pointer;
+  font-size: var(--font-size-medium);
   background-color: var(--color-primary);
   color: var(--color-text);
   border: none;
-  border-radius: 5px;
-  transition: background-color 0.3s ease; /* 배경색에만 트랜지션 적용 */
-  margin: var(--spacing-small);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
 }
 
-button:hover {
+#action-buttons button:hover {
   background-color: var(--color-hover);
 }
 
+/* Tooltip */
+#tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: var(--color-text);
+  padding: var(--spacing-medium);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-small);
+  z-index: 1000;
+  max-width: 250px;
+  pointer-events: none;
+}
+
+#mobile-sidebar-controls {
+  display: none;
+}
+
+.mobile-only {
+  display: none;
+}
+
+#left-sidebar, #right-sidebar {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Media Queries */
 @media (max-width: 1200px) {
+  .mobile-only {
+    display: block;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
   #game-container {
-      flex-direction: column;
+    flex-direction: column;
+    flex: 1;
   }
 
   #main-content {
-      order: 1;
-      width: 100%; /* 추가 */
-      padding: 10px; /* 패딩 감소 */
+    order: 1;
+    width: 100%;
+    flex: 1;
+    padding: var(--spacing-medium);
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    height: 100%;
+    width: 80%;
+    max-width: 300px;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  #left-sidebar, #right-sidebar {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 80%;
+    max-width: 300px;
+    z-index: 1000;
+    background-color: var(--color-secondary);
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
   }
 
   #left-sidebar {
-      order: 2;
-      width: 100%; /* 추가 */
+    left: 0;
+    transform: translateX(-100%);
   }
 
   #right-sidebar {
-      order: 3;
-      width: 100%; /* 추가 */
+    right: 0;
+    transform: translateX(100%);
+  }
+
+  #left-sidebar.active {
+    transform: translateX(0);
+  }
+
+  #right-sidebar.active {
+    transform: translateX(0);
+  }
+
+  #mobile-sidebar-controls {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-medium);
+    background-color: var(--color-secondary);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+  }
+
+  #mobile-sidebar-controls button {
+    padding: var(--spacing-small) var(--spacing-medium);
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
   }
 }
 
 @media (max-width: 600px) {
   #main-content {
-    padding: 5px; /* 패딩 추가 감소 */
+    padding: var(--spacing-small);
   }
 
   #gameCanvas {
-      width: 100%;
-      height: auto;
+    width: 100%;
+    height: auto;
+    max-height: 50vh;
   }
 
-  button {
-      width: calc(50% - 10px);
+  #action-buttons button {
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+    font-size: var(--font-size-small);
+    padding: var(--spacing-small) var(--spacing-medium);
+  }
+
+  #player-info, #skill-panel, #spell-panel, #inventory {
+    margin-bottom: var(--spacing-medium);
   }
 }

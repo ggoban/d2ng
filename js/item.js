@@ -1,4 +1,5 @@
 // item.js
+
 import { gameConsole } from './console.js';
 
 export class Item {

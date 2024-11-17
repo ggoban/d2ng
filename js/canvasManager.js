@@ -1,3 +1,5 @@
+// canvasManager.js
+
 export class CanvasManager {
   constructor(canvasId) {
       this.mainCanvas = document.getElementById(canvasId);
@@ -148,9 +150,6 @@ export class CanvasManager {
 
   drawExplorationProgress(exploration) {
       this.uiCtx.save();
-
-      this.uiCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-      this.uiCtx.fillRect(this.width - 150, 0, 150, 40);
       this.uiCtx.fillStyle = '#FFFFFF';
       this.uiCtx.font = '20px Arial';
       this.uiCtx.textAlign = 'right';

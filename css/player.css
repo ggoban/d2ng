@@ -1,17 +1,8 @@
-/* player.css */
-
-#left-sidebar, #right-sidebar {
-  width: 250px;
-  background-color: var(--color-secondary);
-  padding: var(--spacing-large);
-  overflow-y: auto;
-  box-sizing: border-box;
-}
-
+/* Player Info */
 #player-info {
   background-color: var(--color-secondary);
-  border-radius: 5px;
-  border: 1px solid #4A4A4A;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
   padding: var(--spacing-medium);
   margin-bottom: var(--spacing-large);
   box-sizing: border-box;
@@ -20,35 +11,35 @@
 #player-info h3 {
   color: var(--color-primary);
   margin-top: 0;
-  font-size: 1.2rem;
+  font-size: var(--font-size-large);
 }
 
 #player-basic-info, #player-stats {
-  border: 1px solid #4A4A4A;
+  border: 1px solid var(--color-border);
   padding: var(--spacing-medium);
-  border-radius: 5px;
+  border-radius: var(--border-radius);
 }
 
 #player-basic-info p, #player-stats p {
   margin: var(--spacing-small) 0;
-  font-size: 0.9rem;
+  font-size: var(--font-size-small);
 }
 
 #player-stats h4 {
   margin-top: 0;
   margin-bottom: var(--spacing-medium);
   color: var(--color-primary);
-  font-size: 1.1rem;
+  font-size: var(--font-size-medium);
 }
 
 #player-stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5px;
+  gap: var(--spacing-small);
 }
 
 #player-hp {
-  transition: color 0.3s ease;
+  transition: color var(--transition-speed) ease;
 }
 
 .stat-increase-btn {
@@ -57,30 +48,122 @@
   background-color: var(--color-primary);
   color: var(--color-text);
   border: none;
-  border-radius: 3px;
+  border-radius: var(--border-radius);
   cursor: pointer;
-  font-size: 0.8rem;
-  transition: background-color 0.3s ease; /* 배경색에만 트랜지션 적용 */
+  font-size: var(--font-size-small);
+  transition: background-color var(--transition-speed) ease;
 }
 
 .stat-increase-btn:hover {
   background-color: var(--color-hover);
 }
 
-#inventory {
+/* Skills and Spells */
+.panel-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0px;
+  margin-bottom: var(--spacing-medium);
+}
+
+.panel-header span {
+  color: var(--color-primary);
+  font-size: var(--font-size-large);
+  margin-right: var(--spacing-small);
+}
+
+.toggle-button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: var(--font-size-large);
+  padding: 0;
+}
+
+.toggle-button:hover {
+  color: var(--color-hover);
+}
+
+#skill-panel, #spell-panel, #inventory {
   background-color: var(--color-secondary);
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   padding: var(--spacing-medium);
   margin-bottom: var(--spacing-large);
   box-sizing: border-box;
-  border: 1px solid #4A4A4A;
+}
+
+#skill-content, #spell-content, #inventory-content {
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-medium);
+  border-radius: var(--border-radius);
+}
+
+#skill-grid, #spell-grid, #inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-small);
+}
+
+.skill-slot, .spell-slot, .inventory-slot {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--font-size-vsmall);
+  text-align: center;
+  color: var(--color-text);
+  word-break: break-all;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.skill-slot:hover, .spell-slot:hover, .inventory-slot:hover {
+  background-color: var(--color-hover);
+}
+
+/* Inventory */
+#inventory, #skill-panel, #spell-panel {
+  border: 1px solid var(--color-border);
 }
 
 #inventory h3 {
   color: var(--color-primary);
   margin-top: 0;
-  font-size: 1.2rem;
-  margin-bottom: var(--spacing-medium); /* 제목 아래 여백 추가 */
+  font-size: var(--font-size-large);
+  margin-bottom: var(--spacing-medium);
+}
+
+.inventory-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--spacing-medium);
+}
+
+.inventory-header span {
+  color: var(--color-primary);
+  font-size: var(--font-size-large);
+  margin-right: var(--spacing-small);
+}
+
+#toggleInventory, #toggleSpell, #toggleSkill {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: var(--font-size-large);
+  padding: 0;
+  margin: 0;
+}
+
+#toggleInventory:hover {
+  color: var(--color-hover);
 }
 
 #inventory-list {
@@ -89,60 +172,36 @@
 }
 
 #inventory-list li {
-  margin-bottom: 5px;
+  margin-bottom: var(--spacing-small);
   background-color: #444444;
-  padding: 5px;
-  border-radius: 3px;
-}
-
-#inventory-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-small);
   padding: var(--spacing-small);
-  background-color: var(--color-background);
-  border-radius: 5px;
-}
-
-.inventory-slot {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background-color: var(--color-secondary);
-  border: 1px solid #4A4A4A;
-  border-radius: 3px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.75rem; /* 0.75rem = 12px (기본 16px 기준) */
-  text-align: center;
-  color: var(--color-text);
-  word-break: break-all;
-  overflow: hidden;
+  border-radius: var(--border-radius);
 }
 
 .inventory-slot.empty::after {
   content: 'Empty';
-  color: #888; /* 연한 회색으로 변경 */
+  color: #888;
 }
 
 .inventory-slot:not(.empty) {
   cursor: pointer;
 }
 
+/* Character Creation */
 #character-creation {
   position: fixed;
-  top: 27%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #333333;
-  padding: 20px;
-  border-radius: 5px;
+  background-color: var(--color-secondary);
+  padding: var(--spacing-large);
+  border-radius: var(--border-radius);
   text-align: center;
-  border: 2px solid #4CAF50;
+  border: 2px solid var(--color-primary);
 }
 
 #character-creation h2 {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 #character-creation input,
@@ -150,75 +209,59 @@
 #character-creation button {
   display: block;
   width: 100%;
-  margin: 10px 0;
-  padding: 5px;
+  margin: var(--spacing-medium) 0;
+  padding: var(--spacing-small);
 }
 
 #character-creation button {
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-text);
   border: none;
-  padding: 10px;
+  padding: var(--spacing-medium);
   cursor: pointer;
 }
 
 #character-creation button:hover {
-  background-color: #45a049;
+  background-color: var(--color-hover);
 }
 
+/* Media Queries */
 @media (max-width: 1200px) {
-  #left-sidebar, #right-sidebar {
-      width: 100%;
-      padding: 10px; /* 패딩 감소 */
-  }
-
-  #player-info, #inventory {
-      width: 100%; /* 변경 */
-      margin-bottom: 10px; /* 간격 조정 */
-  }
-
   #player-info {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--spacing-medium);
+    margin-bottom: 0;
   }
 
   #player-basic-info, #player-stats {
-      flex: 1;
-      min-width: 200px;
+    flex: 1;
+    min-width: 200px;
   }
 
   #player-stats-grid {
-      grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
   
   #inventory-grid {
-    grid-template-columns: repeat(10, 1fr); /* 모바일에서는 10열로 변경 */
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (max-width: 600px) {
-  #left-sidebar, #right-sidebar {
-      padding: 5px; /* 패딩 추가 감소 */
-  }
-
-  #player-info, #inventory {
-      padding: 5px; /* 패딩 감소 */
-  }
-  
-  #player-info, #inventory {
-    padding: 5px;
-  }
-
   #player-info {
-      flex-direction: column;
+    flex-direction: column;
   }
 
   #player-stats {
-      margin-top: 10px;
+    margin-top: var(--spacing-medium);
   }
 
   #inventory-grid {
-    grid-template-columns: repeat(5, 1fr); /* 작은 화면에서는 다시 5열로 */
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  #skill-grid, #spell-grid, #inventory-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

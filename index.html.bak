@@ -14,7 +14,7 @@
 
 <body>
   <div id="game-container">
-    <div id="left-sidebar" class="sidebar">
+    <div id="left-sidebar">
       <!-- 플레이어 정보 영역 -->
       <div id="player-info">
         <div id="player-basic-info">
@@ -40,10 +40,10 @@
                 data-stat="strength" style="display:none;">+</button></p>
             <p>민첩: <span id="player-dexterity">10</span> <button id="increase-dexterity" class="stat-increase-btn"
                 data-stat="dexterity" style="display:none;">+</button></p>
-            <p>건강: <span id="player-constitution">10</span> <button id="increase-constitution"
-                class="stat-increase-btn" data-stat="constitution" style="display:none;">+</button></p>
-            <p>지능: <span id="player-intelligence">10</span> <button id="increase-intelligence"
-                class="stat-increase-btn" data-stat="intelligence" style="display:none;">+</button></p>
+            <p>건강: <span id="player-constitution">10</span> <button id="increase-constitution" class="stat-increase-btn"
+                data-stat="constitution" style="display:none;">+</button></p>
+            <p>지능: <span id="player-intelligence">10</span> <button id="increase-intelligence" class="stat-increase-btn"
+                data-stat="intelligence" style="display:none;">+</button></p>
             <p>지혜: <span id="player-wisdom">10</span> <button id="increase-wisdom" class="stat-increase-btn"
                 data-stat="wisdom" style="display:none;">+</button></p>
             <p>매력: <span id="player-charisma">10</span> <button id="increase-charisma" class="stat-increase-btn"
@@ -71,13 +71,13 @@
         </div>
         <div id="battleButtons" style="display: none;">
           <button id="attackButton">공격</button>
-          <button id="skillButton" class="sidebar-toggle">기술</button>
-          <button id="spellButton" class="sidebar-toggle">주문</button>
+          <button id="skillButton">기술</button>
+          <button id="spellButton">주문</button>
           <button id="fleeButton">도망</button>
         </div>
       </div>
     </div>
-    <div id="right-sidebar" class="sidebar">
+    <div id="right-sidebar">
       <div id="skill-panel" style="display: none;">
         <h3 class="panel-header">
           <span>기술</span>
@@ -108,10 +108,6 @@
       </div>
     </div>
   </div>
-  <div id="mobile-sidebar-controls" class="mobile-only">
-    <button id="toggle-left-sidebar">플레이어 정보</button>
-    <button id="toggle-right-sidebar">인벤토리/스킬</button>
-  </div>
   <div id="loading-screen" style="display: none;">
     <div class="loading-container">
       <div class="loading-spinner"></div>
@@ -119,7 +115,6 @@
     </div>
   </div>
   <script type='module' src="./js/main.js"></script>
-  <script src="./js/mobile-sidebar.js"></script>
 </body>
 
 </html>

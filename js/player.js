@@ -1,8 +1,8 @@
 // player.js
 
 import { Utils, Constants } from './utils.js';
-import { SpellBook, magicMissile, cureLightWounds } from './spells.js';
-import { weapons, armors, WeaponProperty  } from './equipments.js';
+import { SpellBook, spellList  } from './spells.js';
+import { weapons, armors, ArmorType, WeaponProperty  } from './equipments.js';
 import { gameConsole } from './console.js';
 
 export class Player {
@@ -31,6 +31,7 @@ export class Player {
       120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000,
     ];
     this.skillPoints = 0;
+    this.skills = [];
     this.spellBook = new SpellBook();
   }
 
@@ -52,6 +53,8 @@ export class Player {
     this.equippedWeapon = null;
     this.equippedArmor = null;
     this.equippedShield = null;
+    this.skills = [];
+    this.spellBook = new SpellBook();
     this.resetInventory();
     this.updateInfo();
   }
@@ -65,6 +68,7 @@ export class Player {
     this.setInitialHp();
     this.setInitialAc(); // AC 초기화 메서드 호출
     this.setInitialEquipment(); // 새로운 메서드 호출
+    this.setInitialSkills();
     this.setInitialSpells();
     this.updateInfo();
   }
@@ -172,17 +176,29 @@ export class Player {
     }
   }
 
+  setInitialSkills() {
+    // 예시로 몇 가지 기본 기술을 추가합니다 
+    // 클래스에 따라 다른 기술을 추가할 수 있습니다
+    switch (this.class) {
+      case "Fighter":
+        this.skills.push({ name: "재기의 바람", description: "전투에 단 한번씩 1d10+레벨만큼 hp를 회복합니다.", effect: () => { /* 효과 구현 */ } });
+        break;
+      case "Rogue":
+        this.skills.push({ name: "암습 공격", description: "턴마다 한번 추가로 명중 굴림을 굴려 1d6점의 피해를 줍니다.", effect: () => { /* 효과 구현 */ } });
+    }
+  }
+
   setInitialSpells() {
     switch (this.class) {
         case "Wizard":
-            this.spellBook.learnSpell(magicMissile);
-            this.spellBook.prepareSpell("매직 미사일");
-            this.spellBook.setSlots(1, 2);  // 1레벨 주문 슬롯 2개
+            this.spellBook.learnSpell(spellList.magicMissile);
+            this.spellBook.prepareSpell("마법 화살");
+            this.spellBook.getAvailableSlots;  // 1레벨 주문 슬롯 2개
             break;
         case "Cleric":
-            this.spellBook.learnSpell(cureLightWounds);
+            this.spellBook.learnSpell(spellList.cureLightWounds);
             this.spellBook.prepareSpell("경상 치료");
-            this.spellBook.setSlots(1, 2);  // 1레벨 주문 슬롯 2개
+            this.spellBook.getAvailableSlots;  // 1레벨 주문 슬롯 2개
             break;
     }
   }
@@ -283,6 +299,19 @@ export class Player {
     return 1; // 맨손 공격
   }
 
+  getSpellDamage(item) {
+    let damage = Utils.rollDiceWithNotation(item.damage, this.name);
+    const intMod = this.getModifier("intelligence");
+    const wisMod = this.getModifier("wisdom");
+    //console.log(damage);
+    if(item.addEffect) damage += item.addEffect;
+    if(this.class === 'Wizard') damage += intMod;
+    if(this.class === 'Cleric') damage += wisMod;
+    
+    return damage;
+    //return 1; // 맨손 공격
+  }
+
   getAttackBonus() {
     let bonus = this.proficiencyBonus; // 숙련도 보너스
     if (this.equippedWeapon) {
@@ -305,6 +334,13 @@ export class Player {
       // 맨손 공격의 경우 힘 수정치 사용
       bonus += this.getModifier("strength");
     }
+    return bonus;
+  }
+
+  getSpellBonus() {
+    let bonus = this.proficiencyBonus; // 숙련도 보너스
+    if (this.class === 'Wizard') bonus += this.getModifier("intelligence");
+    if (this.class === 'Cleric') bonus += this.getModifier("wisdom");
     return bonus;
   }
 
@@ -445,10 +481,6 @@ export class Player {
     this.spellBook.learnSpell(spellName);
   }
 
-  castSpell(spellName, target) {
-    this.spellBook.castSpell(spellName, this, target);
-  }
-
   updateInfo() {
     this.updateBasicInfo();
     this.updateStats();
@@ -462,8 +494,8 @@ export class Player {
     this.updateElement("player-race", this.race);
     this.updateElement("player-class", this.class);
     this.updateElement("player-level", this.level);
-    this.updateHP();
     this.updateElement("player-gold", this.gold);
+    this.updateHP();
   }
 
   updateHP() {

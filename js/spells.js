@@ -1,18 +1,56 @@
-// spells.js
+// spell.js
+
+// 위저드 클래스의 레벨별 주문 슬롯 정의
+export const spellSlots = {
+  1:  [2, 0, 0, 0, 0, 0, 0, 0, 0],
+  2:  [3, 0, 0, 0, 0, 0, 0, 0, 0],
+  3:  [4, 2, 0, 0, 0, 0, 0, 0, 0],
+  4:  [4, 3, 0, 0, 0, 0, 0, 0, 0],
+  5:  [4, 3, 2, 0, 0, 0, 0, 0, 0],
+  6:  [4, 3, 3, 0, 0, 0, 0, 0, 0],
+  7:  [4, 3, 3, 1, 0, 0, 0, 0, 0],
+  8:  [4, 3, 3, 2, 0, 0, 0, 0, 0],
+  9:  [4, 3, 3, 3, 1, 0, 0, 0, 0],
+  10: [4, 3, 3, 3, 2, 0, 0, 0, 0],
+  11: [4, 3, 3, 3, 2, 1, 0, 0, 0],
+  12: [4, 3, 3, 3, 2, 1, 0, 0, 0],
+  13: [4, 3, 3, 3, 2, 1, 1, 0, 0],
+  14: [4, 3, 3, 3, 2, 1, 1, 0, 0],
+  15: [4, 3, 3, 3, 2, 1, 1, 1, 0],
+  16: [4, 3, 3, 3, 2, 1, 1, 1, 0],
+  17: [4, 3, 3, 3, 2, 1, 1, 1, 1],
+  18: [4, 3, 3, 3, 3, 1, 1, 1, 1],
+  19: [4, 3, 3, 3, 3, 2, 1, 1, 1],
+  20: [4, 3, 3, 3, 3, 2, 2, 1, 1]
+};
+
+// 주문 슬롯을 가져오는 함수
+export function getSpellSlots(level) {
+  return spellSlots[level] || spellSlots[1]; // 레벨이 없으면 1레벨 슬롯 반환
+}
+
+// 주문 클래스 (기존 코드에 추가)
 export class Spell {
-  constructor(name, level, effect, description) {
+  constructor(name, ename, level, damage, addEffect, school, castingTime, range, components, duration, description) {
       this.name = name;
+      this.ename = ename;
       this.level = level;
-      this.effect = effect;
+      this.damage = damage;
+      this.addEffect = addEffect;
+      this.school = school;
+      this.castingTime = castingTime;
+      this.range = range;
+      this.components = components;
+      this.duration = duration;
       this.description = description;
   }
 }
 
 export class SpellBook {
-  constructor() {
+  constructor(characterLevel) {
     this.knownSpells = new Map();
     this.preparedSpells = new Map();
-    this.slots = new Map();
+    this.slots = getSpellSlots(characterLevel);
   }
 
   learnSpell(spell) {
@@ -30,22 +68,23 @@ export class SpellBook {
     this.preparedSpells.delete(spellName);
   }
 
-  setSlots(level, count) {
-    this.slots.set(level, count);
-  }
 
-  useSlot(level) {
-    if (this.slots.has(level) && this.slots.get(level) > 0) {
-      this.slots.set(level, this.slots.get(level) - 1);
+  useSlot(level) {   
+      this.slots[level-1] -= 1;
       return true;
-    }
-    return false;
   }
 
-  resetSlots() {
-    for (let [level, count] of this.slots) {
-      this.slots.set(level, count);
+  resetSlots(characterLevel) {
+    this.slots = getSpellSlots(characterLevel);
+  }
+
+  castSpell(spellName, slotLevel) {
+    const spell = this.preparedSpells.get(spellName);
+    if (spell && this.slots[slotLevel - 1] > 0) {
+        this.slots[slotLevel - 1]--;
+        return spell;
     }
+    return null;
   }
 
   getPreparedSpells() {
@@ -53,19 +92,41 @@ export class SpellBook {
   }
 
   getAvailableSlots() {
-    return Array.from(this.slots.entries());
-  }
+    return this.slots;
+}
 }
 
 // 예시 주문들
-export const magicMissile = new Spell("매직 미사일", 1, (caster, target) => {
-  const damage = 3 + Math.floor(caster.stats.intelligence / 2);
-  target.takeDamage(damage);
-  return `${caster.name}의 매직 미사일! ${target.name}에게 ${damage}의 피해를 입혔습니다.`;
-}, "실패하지 않는 마법 화살을 발사합니다.");
+const magicMissile = new Spell(
+  "마법 화살",
+  "magicMissile",
+  1,
+  "3d4",
+  3,
+  "Evocation",
+  "1 action",
+  "120 feet",
+  "V, S",
+  "Instantaneous",
+  "당신은 세 개의 빛나는 화살을 만들어 낸다. 각 화살은 자동으로 명중하며 1d4+1의 역능 피해를 준다."
+);
 
-export const cureLightWounds = new Spell("경상 치료", 1, (caster, target) => {
-  const healAmount = 5 + Math.floor(caster.stats.wisdom / 2);
-  target.heal(healAmount);
-  return `${caster.name}의 경상 치료! ${target.name}의 체력을 ${healAmount} 회복했습니다.`;
-}, "가벼운 상처를 치료합니다.");
+const cureLightWounds = new Spell(
+  "경상 치료",
+  "cureLightWounds",
+  1,
+  "3d4",
+  3,
+  "Evocation",
+  "1 action",
+  "120 feet",
+  "V, S",
+  "Instantaneous",
+  "당신은 세 개의 빛나는 화살을 만들어 낸다. 각 화살은 자동으로 명중하며 1d4+1의 역능 피해를 준다."
+);
+
+export const spellList = {
+  magicMissile: magicMissile,
+  cureLightWounds: cureLightWounds,
+  // 추가 몬스터들...
+};

@@ -1,4 +1,5 @@
 // event.js
+
 import { gameConsole } from './console.js';
 
 export class EventManager {

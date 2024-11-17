@@ -1,5 +1,7 @@
 // dialogueManager.js
 
+import { gameConsole } from './console.js';
+
 export class DialogueManager {
   constructor(game) {
       this.game = game;
@@ -12,7 +14,7 @@ export class DialogueManager {
       this.currentDialogue = { npc, message: initialMessage };
       this.options = [
           { text: "1. 인사한다.", action: () => this.greet(npc) },
-          { text: "2. 나간다.", action: () => this.exit() }
+          { text: "2. 나간다.", action: () => this.exit(npc) }
       ];
       this.game.updateCanvas();
       this.addClickListener();
@@ -23,15 +25,19 @@ export class DialogueManager {
       switch(npc) {
           case 'innkeeper':
               greeting = "안녕하세요! 편안한 휴식을 원하시나요?";
+              gameConsole.log("여관주인: 안녕하세요! 편안한 휴식을 원하시나요?");
               break;
           case 'shopkeeper':
               greeting = "어서오세요! 무엇을 구매하고 싶으신가요?";
+              gameConsole.log("상점주인: 어서오세요! 무엇을 구매하고 싶으신가요?");
               break;
           case 'guildmaster':
               greeting = "모험가님, 어떤 퀘스트에 관심이 있으신가요?";
+              gameConsole.log("길드마스터: 안녕하세요! 모험가님, 어떤 퀘스트에 관심이 있으신가요?");
               break;
           case 'blacksmitchmen':
               greeting = "대장장이의 열정이 느껴지시나요? 어떤 장비를 원하십니까?";
+              gameConsole.log("대장장이: 대장장이의 열정이 느껴지시나요? 어떤 장비를 원하십니까?");
               break;
           default:
               greeting = "안녕하세요!";
@@ -40,7 +46,8 @@ export class DialogueManager {
       this.game.updateCanvas();
   }
 
-  exit() {
+  exit(npc) {
+    gameConsole.log(`${npc}: 모험가님 다음에 또 방문해 주세요.`);
     this.removeClickListener();
     this.game.backToTown();
   }

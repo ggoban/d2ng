@@ -1,6 +1,8 @@
 // battle.js
+
 import { Utils } from './utils.js';
 import { gameConsole } from './console.js';
+import { Spell, SpellBook } from './spells.js';
 
 export class Battle {
   constructor(game, player, monster, explorationGain) {
@@ -58,6 +60,12 @@ export class Battle {
         gameConsole.log(`-----------------------------------------------`);
         gameConsole.log("플레이어의 턴입니다. 행동을 선택하세요.");
         // 플레이어의 행동은 버튼 클릭으로 처리됩니다.
+        if (this.player.class === "Wizard" || this.player.class === "Cleric") {
+          this.game.updateSpellPanel();
+        }
+        if (this.player.class === "Fighter" || this.player.class === "Rouge") {
+          this.game.updateSkillPanel();
+        }
     } else {
         gameConsole.log(`-----------------------------------------------`);
         gameConsole.log(`${this.monster.name}의 턴입니다.`);
@@ -72,14 +80,14 @@ export class Battle {
         
     if (attackRollDice === 20) {
       damage = this.monster.getAttackDamage() * 2;
-      gameConsole.log("몬스터의 공격이 치명적입니다!");
+      gameConsole.log(`${this.monster.name}의 공격이 치명적입니다!`);
     } else if (attackRollDice === 1) {
-      gameConsole.log("몬스터의 공격이 완전히 빗나갔습니다.");
+      gameConsole.log(`${this.monster.name}의 공격이 완전히 빗나갔습니다.`);
     } else if (attackRoll < this.player.ac) {
       gameConsole.log(`${this.monster.name}의 공격이 빗나갔습니다.`);
     } else {
       damage = this.monster.getAttackDamage();
-      gameConsole.log(`${this.monster.name}의 공격이 성공했습니다! ${this.monster.equippedWeapon ? this.monster.equippedWeapon.name : '맨손'}으로 ${damage}의 피해를 입혔습니다.`);
+      gameConsole.log(`${this.monster.name}의 공격이 성공했습니다. ${this.monster.equippedWeapon ? this.monster.equippedWeapon.name : '맨손'}으로 ${damage}의 피해를 입혔습니다.`);
     }   
 
     const playerSurvived = this.player.takeDamage(damage);       
@@ -102,17 +110,18 @@ export class Battle {
     if (attackRollDice === 20) {
       effect = 'Critical!';
       damage = this.player.getAttackDamage() * 2;
-      gameConsole.log("크리티컬 히트! 데미지가 2배가 됩니다!");
+      //gameConsole.log("크리티컬 히트! 데미지가 2배가 됩니다!");
+      gameConsole.log(`${this.player.name}의 크리티컬 공격이 성공했습니다! ${this.player.equippedWeapon ? this.player.equippedWeapon.name : '맨손'}으로 ${damage}의 피해를 입혔습니다!`);
     } else if (attackRollDice === 1) {
       effect = 'Miss!';
-      gameConsole.log("플레이어의 공격이 어림없이 빗나갔습니다.");
+      gameConsole.log(`${this.player.name}의 공격이 어림없이 빗나갔습니다.`);
     } else if (attackRoll < this.monster.ac) {
       effect = 'Miss!';
-      gameConsole.log("플레이어의 공격이 빗나갔습니다.");
+      gameConsole.log(`${this.player.name}의 공격이 빗나갔습니다.`);
     } else {
       effect = 'Hit!';
       damage = this.player.getAttackDamage();
-      gameConsole.log(`플레이어의 공격이 성공했습니다! ${this.player.equippedWeapon ? this.player.equippedWeapon.name : '맨손'}으로 ${damage}의 피해를 입혔습니다.`);
+      gameConsole.log(`${this.player.name}의 공격이 성공했습니다. ${this.player.equippedWeapon ? this.player.equippedWeapon.name : '맨손'}으로 ${damage}의 피해를 입혔습니다.`);
     }
 
     // 이펙트 표시
@@ -126,7 +135,7 @@ export class Battle {
             setTimeout(() => {
                 this.game.canvasManager.clearAttackEffect();
                 this.end(true);
-            }, 300);
+            }, 200);
             return;
         }
     }
@@ -136,7 +145,7 @@ export class Battle {
         this.game.updateCanvas();
         this.initiativeOrder.push(this.initiativeOrder.shift());
         this.nextTurn();
-    }, 300);
+    }, 200);
   }
 
   playerFlee() {
@@ -150,10 +159,77 @@ export class Battle {
     }
   }
 
+  useSkill(skill) {
+    if (this.initiativeOrder[0] === this.player) {
+        const result = skill.use(this.player, this.monster);
+        if (result) {
+            if (this.monster.hp <= 0) {
+                this.end(true);
+            }
+            return result;
+        }
+    }
+    return null;
+  }
+
+  useSkillOrSpell(item) {
+    if (this.game.isInBattle && this.game.currentBattle) {
+        if (item instanceof Spell) {
+            // 주문 사용 로직
+            //const result = this.player.castSpell(item.name, this.currentBattle.monster);
+            gameConsole.log(`${this.player.name}이(가) ${item.name} 주문을 시전 중입니다.`);
+            const spellRollDice = Utils.rollDice(20, this.player.name);
+            const spellRoll = spellRollDice + this.player.getSpellBonus();
+
+            let damage = 0;
+    
+            if (spellRollDice === 20) {
+              damage = this.player.getSpellDamage(item) * 2;
+              //gameConsole.log("크리티컬 히트! 주문 데미지가 2배가 됩니다!");
+              gameConsole.log(`${this.player.name}의 ${item.name} 주문이 대성공했습니다! ${damage}의 피해를 입혔습니다!`);
+            } else if (spellRollDice === 1) {
+              gameConsole.log(`${this.player.name}의 ${item.name} 주문이 어림없이 실패했습니다.`);
+            } else if (spellRoll < this.monster.ac) {
+              gameConsole.log(`${this.player.name}의 ${item.name} 주문이 실패했습니다.`);
+            } else {
+              damage = this.player.getSpellDamage(item);
+              gameConsole.log(`${this.player.name}의 ${item.name} 주문이 성공했습니다. ${damage}의 피해를 입혔습니다.`);
+            }
+
+            this.player.spellBook.slots[item.level-1] -= item.level;
+            const remainSlots = this.player.spellBook.getAvailableSlots();
+            gameConsole.log(`${this.player.name}의 주문 슬롯이 ${remainSlots} 남았습니다.`);
+
+            this.monster.hp = Math.max(0, this.monster.hp - damage);
+            if (this.monster.hp <= 0) {
+              this.end(true);
+            } else {
+              this.game.updateCanvas();
+              this.initiativeOrder.push(this.initiativeOrder.shift());
+              this.nextTurn();
+            }
+        } else if (item instanceof Skill) {
+            // 기술 사용 로직
+            const result = this.currentBattle.useSkill(item);
+            if (result) {
+                gameConsole.log(result);
+                this.nextTurn();
+            } else {
+                gameConsole.log("기술 사용에 실패했습니다.");
+            }
+        }
+        this.game.updateCanvas();
+    } else {
+        gameConsole.log('전투 중에만 사용할 수 있습니다.');
+    }
+  }
+
   end(isVictory) {
     this.game.isInBattle = false;
     if (isVictory) {
         gameConsole.log(`${this.monster.name}을(를) 물리쳤습니다!`);
+        this.game.skillPanel.style.display = 'none';
+        this.game.spellPanel.style.display = 'none';
         this.player.gainExperience(this.monster.xp);
         this.game.increaseExploration(this.explorationGain);
         // this.dropEquipment(); 장비 드랍 관련 기능 추후 고도화
@@ -162,11 +238,14 @@ export class Battle {
     } else {
         if (this.player.hp <= 0) {
             // 여기에 패배 시 처리 로직을 추가할 수 있습니다.
+            this.game.battleButtons.style.display = 'none';
             gameConsole.log(`당신은 ${this.monster.name}에게 패배했습니다. 당신의 이번 여정은 여기까지 입니다...`);
             this.game.gameOver();
             return;
         } else {
             gameConsole.log(`전투가 종료되었습니다.`);
+            this.game.skillPanel.style.display = 'none';
+            this.game.spellPanel.style.display = 'none';
         }
     }
     

@@ -1,4 +1,5 @@
 // game.js
+
 import { Player } from './player.js';
 import { CanvasManager } from './canvasManager.js';
 import { DialogueManager } from './dialogueManager.js';
@@ -7,25 +8,26 @@ import { Battle } from './battle.js';
 import { monsterList } from './monster.js';
 import { gameConsole } from './console.js';
 import { itemList } from './item.js';
+import { Spell } from './spells.js';
 import { GameEventManager } from './eventManager.js';  // 이건 DOM 이벤트 리스너 관리 매니저인데 게임 이벤트 매니저랑 겹치네...
 
 export class Game {
   constructor() {
     this.canvasManager = new CanvasManager("gameCanvas");
     this.dialogueManager = new DialogueManager(this);
+    this.eventManager = new EventManager(this);
     this.gameEventManager = new GameEventManager(this);  // DOM 이벤트 리스너
     this.player = new Player();
     this.currentFloor = 0;
     this.maxFloorReached = 0;
     this.exploration = 0;
-    this.currentLocation = "town";
+    this.currentLocation = "start";
     this.inDungeon = false;
     this.gameStarted = false;
     this.currentMonster = null;
     this.isInBattle = false;
     this.currentBattle = null;
     this.isGameOver = false;
-    this.eventManager = new EventManager(this);
     this.canvasClickListener = this.handleCanvasClick.bind(this);
     this.canvasManager.getMainCanvas().addEventListener('click', this.handleCanvasClick.bind(this));
     this.townButtons = document.getElementById("townButtons");
@@ -34,6 +36,14 @@ export class Game {
     this.battleButtons = document.getElementById("battleButtons");
     this.nextFloorButton = document.getElementById("nextFloorButton");
     this.returnTownButton = document.getElementById("returnTownButton");
+    this.skillPanel = document.getElementById('skill-panel');
+    this.spellPanel = document.getElementById('spell-panel');
+    this.skillGrid = document.getElementById('skill-grid');
+    this.spellGrid = document.getElementById('spell-grid');
+    this.toggleSkillBtn = document.getElementById('toggleSkill');
+    this.toggleSpellBtn = document.getElementById('toggleSpell');
+    this.inventoryContent = document.getElementById('inventory-content');
+    this.toggleInventoryBtn = document.getElementById('toggleInventory');
     this.restartButton = {x: 0, y: 0, width: 200, height: 50,  text: "다시 시작하기",};
     this.loadingScreen = document.getElementById('loading-screen');
   }
@@ -42,7 +52,6 @@ export class Game {
     gameConsole.clear();
     this.gameEventManager.setupEventListeners();  // DOM 이벤트 리스너
     this.player.initializeInventory();
-    this.setupBattleButtons();
     this.showLoadingScreen();
     await this.loadAllImages();
     this.hideLoadingScreen();
@@ -65,16 +74,17 @@ export class Game {
 
   async loadAllImages() {
     const imagesToLoad = [
+      { name: "start", src: "images/start.jpg" },
       { name: "town", src: "images/town.jpg" },
       { name: "inn", src: "images/inn.jpg" },
       { name: "shop", src: "images/shop.jpg" },
       { name: "guild", src: "images/guild.jpg" },
       { name: "dungeon", src: "images/dungeon.jpg" },
       { name: "blacksmith", src: "images/blacksmith.jpg" },
-      { name: "innkeeper", src: "images/portrait/innkeeper.jpg" },
-      { name: "shopkeeper", src: "images/portrait/shopkeeper.jpg" },
-      { name: "guildmaster", src: "images/portrait/guildmaster.jpg" },
-      { name: "blacksmitchmen", src: "images/portrait/blacksmith.jpg" },
+      { name: "npc_inn", src: "images/portrait/innkeeper.jpg" },
+      { name: "npc_shop", src: "images/portrait/shopkeeper.jpg" },
+      { name: "npc_guild", src: "images/portrait/guildmaster.jpg" },
+      { name: "npc_blacksmith", src: "images/portrait/blacksmith.jpg" },
       { name: "goblin", src: "images/monster/goblin.png" },
       { name: "frog", src: "images/monster/frog.png" },
       { name: "giantfrog", src: "images/monster/giantfrog.png" },
@@ -90,29 +100,16 @@ export class Game {
     await Promise.all(loadPromises);
   }
 
-  setupBattleButtons() {
-    const attackButton = document.createElement("button");
-    attackButton.textContent = "공격";
-    attackButton.onclick = () => this.attack();
-
-    const fleeButton = document.createElement("button");
-    fleeButton.textContent = "도망";
-    fleeButton.onclick = () => this.flee();
-
-    this.battleButtons.appendChild(attackButton);
-    this.battleButtons.appendChild(fleeButton);
-  }
-
   resetGame() {
     this.currentFloor = 0;
     this.maxFloorReached = 0;
     this.exploration = 0;
     this.inDungeon = false;
-    this.currentLocation = "town";
+    this.currentLocation = "start";
     this.currentBattle = null;
     this.isInBattle = false;
     this.isGameOver = false;
-
+    
     // 플레이어 리셋
     this.player.reset();
 
@@ -143,11 +140,32 @@ export class Game {
 
   gameOver() {
     if (this.isGameOver) return;
-    gameConsole.log("게임 오버! 캐릭터가 사망했습니다.");
+    //this.saveConsoleToFile();
+    this.gameEventManager.removeListener("attckButton","click");
     this.player.reset(); // player reset 호출 추가
+    this.updateSpellPanel();
+    this.updateSkillPanel();
     this.isGameOver = true; // 게임 오버 상태 추가
     this.updateCanvas();
     this.showRestartButton();
+  }
+
+  saveConsoleToFile() {
+    const consoleElement = document.getElementById('console');
+    const consoleText = consoleElement.innerText || consoleElement.textContent;
+    
+    const blob = new Blob([consoleText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    
+    const downloadLink = document.createElement('a');
+    downloadLink.href = url;
+    downloadLink.download = 'game_log.txt';
+    
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    
+    URL.revokeObjectURL(url);
   }
 
   showRestartButton() {
@@ -211,11 +229,14 @@ export class Game {
         case 'guild':
         case 'blacksmith':
           this.canvasManager.drawBackground(this.currentLocation);
-          this.canvasManager.drawDialogueBox(this.dialogueManager.getDialogueText(), this.currentLocation + 'keeper');
+          this.canvasManager.drawDialogueBox(this.dialogueManager.getDialogueText(), 'npc_'+this.currentLocation);
           this.canvasManager.drawDialogueOptions(this.dialogueManager.options);
           break;
         case "town":
           // 마을 특정 UI 요소를 그릴 수 있습니다.
+          break;
+        case "start":
+            // 마을 특정 UI 요소를 그릴 수 있습니다.
           break;
         case "dungeon":
           if (this.isInBattle && this.currentBattle) {
@@ -269,7 +290,7 @@ export class Game {
       gameConsole.log("던전에 처음 입장했습니다. 1층부터 탐험을 시작하세요!");
     } else {
       this.currentFloor = this.maxFloorReached;
-      gameConsole.log(`이전에 도달한 ${this.maxFloorReached}층부터 탐험을 재개합니다.`);
+      gameConsole.log(`당신은 ${this.maxFloorReached}층부터 탐험을 재개합니다.`);
     }
     this.exploration = 0;
     this.updateCanvas();
@@ -308,6 +329,7 @@ export class Game {
     this.exploration += explorationGain;
     if (this.exploration >= 100) {
       this.exploration = 100;
+      gameConsole.log(`던전 ${this.currentFloor}층 탐험을 완료했습니다.`);
     }
     gameConsole.log(`탐험을 진행했습니다. 탐사도가 ${explorationGain}% 증가했습니다.`);
     this.updateExplorationButtons();
@@ -367,7 +389,7 @@ export class Game {
     this.inDungeon = false;
     this.currentLocation = "town";
     this.updateCanvas();
-    gameConsole.log(`마을로 귀환했습니다. 던전 ${this.maxFloorReached}층 끝까지 도달했습니다.`);
+    gameConsole.log(`탐사를 성공적으로 마치고 마을로 귀환했습니다.`);
     this.townButtons.style.display = "flex";
     this.dungeonButtons.style.display = "none";
   }
@@ -391,5 +413,61 @@ export class Game {
   addItemToInventory(item) {
     this.player.addItem(item);
     gameConsole.log(`${item.name}을(를) 획득했습니다!`);
+  }
+
+  updateSkillPanel() {
+    this.skillGrid.innerHTML = '';
+    if (this.player.class === "Fighter" || this.player.class === "Rouge") {
+      this.player.skills.forEach((skill, index) => {
+          const skillSlot = document.createElement('div');
+          skillSlot.className = 'skill-slot';
+          skillSlot.textContent = skill.name;
+          skillSlot.onclick = () => this.useSkillOrSpell(skill);
+          this.skillGrid.appendChild(skillSlot);
+      });
+      this.skillPanel.style.display = 'block';
+    } else {
+      this.skillPanel.style.display = 'none';
+    }
+  }
+
+  updateSpellPanel() {
+    this.spellGrid.innerHTML = '';
+    if (this.player.class === "Wizard" || this.player.class === "Cleric") {
+        this.player.spellBook.getPreparedSpells().forEach((spell, index) => {
+            const spellSlot = document.createElement('div');
+            spellSlot.className = 'spell-slot';
+            spellSlot.textContent = spell.name;
+            spellSlot.onclick = () => this.currentBattle.useSkillOrSpell(spell);
+            this.spellGrid.appendChild(spellSlot);
+        });
+        this.spellPanel.style.display = 'block';
+    } else {
+        this.spellPanel.style.display = 'none';
+    }
+  }
+
+  togglePanel(panelType) {
+    const panel = panelType === 'skill' ? this.skillPanel : this.spellPanel;
+    const content = panel.querySelector(`#${panelType}-content`);
+    const toggleBtn = panelType === 'skill' ? this.toggleSkillBtn : this.toggleSpellBtn;
+
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        toggleBtn.textContent = '▼';
+    } else {
+        content.style.display = 'none';
+        toggleBtn.textContent = '▶';
+    }
+  }
+
+  toggleInventory() {
+      if (this.inventoryContent.style.display === 'none') {
+          this.inventoryContent.style.display = 'block';
+          this.toggleInventoryBtn.textContent = '▼';
+      } else {
+          this.inventoryContent.style.display = 'none';
+          this.toggleInventoryBtn.textContent = '▶';
+      }
   }
 }
