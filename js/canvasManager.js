@@ -102,9 +102,9 @@ export class CanvasManager {
       this.characterCtx.fillStyle = 'white';
       this.characterCtx.font = '16px Arial';
       this.characterCtx.textAlign = 'left';
-      this.characterCtx.fillText(`HP: ${player.hp}/${player.maxHp}`, 10, 20);
-      this.characterCtx.fillText(`Level: ${player.level}`, 10, 40);
-      this.characterCtx.fillText(`XP: ${player.xp}/${player.nextLevelXp}`, 10, 60);
+      this.characterCtx.fillText(`Level: ${player.level}`, 10, 20);
+      this.characterCtx.fillText(`HP: ${player.hp}/${player.maxHp}`, 10, 40);
+      //this.characterCtx.fillText(`XP: ${player.xp}/${player.nextLevelXp}`, 10, 60);
 
       this.characterCtx.restore();
   }
@@ -112,7 +112,7 @@ export class CanvasManager {
   drawBattleScene(player, monster) {
       this.clear();
       this.drawBackground('Battle');
-      //this.drawPlayer(player);
+      if(window.innerWidth <= 1400) this.drawPlayer(player);
       this.drawMonster(monster);
   }
 

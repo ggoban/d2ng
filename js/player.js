@@ -2,6 +2,7 @@
 
 import { Utils, Constants } from './utils.js';
 import { SpellBook, spellList  } from './spells.js';
+import { skillList } from './skills.js';
 import { weapons, armors, ArmorType, WeaponProperty  } from './equipments.js';
 import { gameConsole } from './console.js';
 
@@ -181,10 +182,10 @@ export class Player {
     // 클래스에 따라 다른 기술을 추가할 수 있습니다
     switch (this.class) {
       case "Fighter":
-        this.skills.push({ name: "재기의 바람", description: "전투에 단 한번씩 1d10+레벨만큼 hp를 회복합니다.", effect: () => { /* 효과 구현 */ } });
+        this.skills.push(skillList.secondWind);
         break;
       case "Rogue":
-        this.skills.push({ name: "암습 공격", description: "턴마다 한번 추가로 명중 굴림을 굴려 1d6점의 피해를 줍니다.", effect: () => { /* 효과 구현 */ } });
+        this.skills.push(skillList.sneakAttack);
     }
   }
 
@@ -196,8 +197,8 @@ export class Player {
             this.spellBook.getAvailableSlots;  // 1레벨 주문 슬롯 2개
             break;
         case "Cleric":
-            this.spellBook.learnSpell(spellList.cureLightWounds);
-            this.spellBook.prepareSpell("경상 치료");
+            this.spellBook.learnSpell(spellList.cureWounds);
+            this.spellBook.prepareSpell("상처 치료");
             this.spellBook.getAvailableSlots;  // 1레벨 주문 슬롯 2개
             break;
     }

@@ -1,4 +1,5 @@
 // monster.js
+
 import { Utils } from './utils.js';
 import { weapons, armors, ArmorType, WeaponProperty } from './equipments.js';
 
@@ -6,6 +7,7 @@ export class Monster {
   constructor(name, ename, size, type, stats, hp, xp, cr) {
     this.name = name;
     this.ename = ename;
+    this.class = 'Monster';
     this.size = size;
     this.type = type;
     this.stats = stats;

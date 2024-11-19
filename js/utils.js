@@ -1,4 +1,5 @@
 // utils.js
+
 import { gameConsole } from "./console.js";
 
 export const Utils = {
@@ -18,7 +19,7 @@ export const Utils = {
     return total;
   },
 
-  // 주사위 굴림 결과를 문자열로 반환하는 함수 (예: "3d6")
+  // 문자열로 된 피해량을 주사위 굴림으로 반환하는 함수 (예: "3d6" -> 3개 6면)
   rollDiceWithNotation: function(notation, roller = "Unknown") {
     const [number, sides] = notation.toLowerCase().split('d').map(Number);
     return this.rollMultipleDice(number, sides, roller);

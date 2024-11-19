@@ -1,35 +1,23 @@
 // game.js
 
 import { Player } from './player.js';
-import { Battle } from './battle.js';
-import { itemList } from './item.js';
-import { monsterList } from './monster.js';
-import { gameConsole } from './console.js';
-
-import { EventManager } from './event.js';
 import { CanvasManager } from './canvasManager.js';
 import { DialogueManager } from './dialogueManager.js';
-import { GameEventManager } from './eventManager.js';  // 이건 DOM 이벤트 리스너 관리 매니저인데 게임 이벤트 매니저랑 겹치네...
-
+import { EventManager } from './event.js';
+import { Battle } from './battle.js';
+import { monsterList } from './monster.js';
+import { gameConsole } from './console.js';
+import { itemList } from './item.js';
 //import { Spell } from './spells.js';
+import { GameEventManager } from './eventManager.js';  // 이건 DOM 이벤트 리스너 관리 매니저인데 게임 이벤트 매니저랑 겹치네...
 
 export class Game {
   constructor() {
-    this.initializeManagers();
-    this.initializeGameState();
-    this.initializeUI();
-    this.setupEventListeners();
-  }
-
-  initializeManagers() {
     this.canvasManager = new CanvasManager("gameCanvas");
     this.dialogueManager = new DialogueManager(this);
     this.eventManager = new EventManager(this);
-    this.gameEventManager = new GameEventManager(this);
+    this.gameEventManager = new GameEventManager(this);  // DOM 이벤트 리스너
     this.player = new Player();
-  }
-
-  initializeGameState() {
     this.currentFloor = 0;
     this.maxFloorReached = 0;
     this.exploration = 0;
@@ -40,9 +28,8 @@ export class Game {
     this.isInBattle = false;
     this.currentBattle = null;
     this.isGameOver = false;
-  }
-
-  initializeUI() {
+    this.canvasClickListener = this.handleCanvasClick.bind(this);
+    this.canvasManager.getMainCanvas().addEventListener('click', this.handleCanvasClick.bind(this));
     this.townButtons = document.getElementById("townButtons");
     this.dungeonButtons = document.getElementById("dungeonButtons");
     this.exploreButton = document.getElementById("exploreButton");
@@ -57,13 +44,8 @@ export class Game {
     this.toggleSpellBtn = document.getElementById('toggleSpell');
     this.inventoryContent = document.getElementById('inventory-content');
     this.toggleInventoryBtn = document.getElementById('toggleInventory');
-    this.loadingScreen = document.getElementById('loading-screen');
     this.restartButton = {x: 0, y: 0, width: 200, height: 50,  text: "다시 시작하기",};
-  }
-
-  setupEventListeners() {
-    this.canvasClickListener = this.handleCanvasClick.bind(this);
-    this.canvasManager.getMainCanvas().addEventListener('click', this.canvasClickListener);
+    this.loadingScreen = document.getElementById('loading-screen');
   }
 
   async initialize() {

@@ -50,8 +50,8 @@ export class GameEventManager {
     this.addListener("nextFloorButton", "click", () => this.game.goToNextFloor());
     this.addListener("returnTownButton", "click", () => this.game.returnToTown());
     this.addListener('attackButton', 'click', () => this.game.attack());
-    this.addListener('skillButton', 'click', () => this.game.updateSkillPanel('기술'));
-    this.addListener('spellButton', 'click', () => this.game.updateSpellPanel('주문'));
+    // this.addListener('skillButton', 'click', () => this.game.updateSkillPanel('기술'));
+    // this.addListener('spellButton', 'click', () => this.game.updateSpellPanel('주문'));
     this.addListener('fleeButton', 'click', () => this.game.flee());
     this.addListener('toggleInventory', 'click', () => this.game.toggleInventory());
     this.addListener('toggleSkill', 'click', () => this.game.togglePanel('skill'));

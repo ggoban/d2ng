@@ -1,3 +1,5 @@
+// wizard.js
+
 export class Wizard {
   constructor(level = 1) {
       this.className = "Wizard";
