@@ -25,19 +25,19 @@ export class DialogueManager {
       switch(npc) {
           case 'innkeeper':
               greeting = "안녕하세요! 편안한 휴식을 원하시나요?";
-              gameConsole.log("여관주인: 안녕하세요! 편안한 휴식을 원하시나요?");
+              gameConsole.log2("여관주인: 안녕하세요! 편안한 휴식을 원하시나요?");
               break;
           case 'shopkeeper':
               greeting = "어서오세요! 무엇을 구매하고 싶으신가요?";
-              gameConsole.log("상점주인: 어서오세요! 무엇을 구매하고 싶으신가요?");
+              gameConsole.log2("상점주인: 어서오세요! 무엇을 구매하고 싶으신가요?");
               break;
           case 'guildmaster':
               greeting = "모험가님, 어떤 퀘스트에 관심이 있으신가요?";
-              gameConsole.log("길드마스터: 안녕하세요! 모험가님, 어떤 퀘스트에 관심이 있으신가요?");
+              gameConsole.log2("길드마스터: 안녕하세요! 모험가님, 어떤 퀘스트에 관심이 있으신가요?");
               break;
-          case 'blacksmitchmen':
+          case 'blacksmith':
               greeting = "대장장이의 열정이 느껴지시나요? 어떤 장비를 원하십니까?";
-              gameConsole.log("대장장이: 대장장이의 열정이 느껴지시나요? 어떤 장비를 원하십니까?");
+              gameConsole.log2("대장장이: 대장장이의 열정이 느껴지시나요? 어떤 장비를 원하십니까?");
               break;
           default:
               greeting = "안녕하세요!";
@@ -47,7 +47,7 @@ export class DialogueManager {
   }
 
   exit(npc) {
-    gameConsole.log(`${npc}: 모험가님 다음에 또 방문해 주세요.`);
+    gameConsole.log2(`${npc}: 모험가님 다음에 또 방문해 주세요.`);
     this.removeClickListener();
     this.game.backToTown();
   }

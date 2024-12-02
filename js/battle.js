@@ -14,6 +14,8 @@ export class Battle {
     this.monster = monster;
     this.resetOneTimeAbilities();
     this.explorationGain = explorationGain;
+    this.round = 1;
+    this.turnCount = 0;
     this.initiativeOrder = [];
   }
 
@@ -24,6 +26,7 @@ export class Battle {
     this.determineInitiative();
     this.game.exploreButton.style.display = "none";
     this.game.battleButtons.style.display = "block";
+    this.game.updateInventoryUI();
     this.game.updateCanvas();
     this.nextTurn();
   }
@@ -70,19 +73,21 @@ export class Battle {
     } else {
       this.monsterTurn();
     }
+
+    this.game.updateCanvas();
   }
 
   playerTurn() {
     gameConsole.log("행동을 선택하세요.");
+    this.turnCount++;
     this.updatePlayerPanels();
   }
 
-  
   updatePlayerPanels() {
     if (this.player.class === "Wizard" || this.player.class === "Cleric") {
       this.game.updateSpellPanel();
     }
-    if (this.player.class === "Fighter" || this.player.class === "Rouge") {
+    if (this.player.class === "Fighter" || this.player.class === "Rogue") {
       this.game.updateSkillPanel();
     }
   }
@@ -198,6 +203,19 @@ export class Battle {
     }
   }
 
+  useItem(index) {
+    const item = this.player.inventory[index];
+    if (item) {
+      item.use(this);
+      this.player.removeItem(index);
+      this.game.updateInventoryUI();
+      this.player.updateInfo();
+      this.game.updateCanvas();
+      return true;
+    }
+    return false;
+  }
+
   useSkillOrSpell(item) {
     if (!this.game.isInBattle || !this.game.currentBattle) {
       gameConsole.log("전투 중에만 사용할 수 있습니다.");
@@ -285,6 +303,11 @@ export class Battle {
   }
 
   endTurn() {
+    this.turnCount++;
+    if (this.turnCount >= this.initiativeOrder.length) {
+      this.round++;
+      this.turnCount = 0;
+    }
     this.game.updateCanvas();
     this.initiativeOrder.push(this.initiativeOrder.shift());
     this.nextTurn();

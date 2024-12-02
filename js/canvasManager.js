@@ -158,6 +158,15 @@ export class CanvasManager {
       this.uiCtx.restore();
   }
 
+  drawRound(round) {
+    this.uiCtx.save();
+    this.uiCtx.font = "20px Arial";
+    this.uiCtx.fillStyle = "white";
+    this.uiCtx.textAlign = "right";
+    this.uiCtx.fillText(`라운드: ${round}`, this.width - 10, 30);
+    this.uiCtx.restore();
+  }
+
   drawDialogueBox(text, npcImageName) {
     const dialogueHeight = this.height / 3;
     const dialogueY = this.height - dialogueHeight;
@@ -244,6 +253,50 @@ export class CanvasManager {
 
     this.uiCtx.restore();
   }
+
+  drawForgeItems(items, type) {
+    this.clear();
+    this.drawBackground('forge');
+  
+    const gridSize = 4;
+    const itemSize = 80;
+    const padding = 10;
+    const startX = 20;
+    const startY = 60;
+  
+    items.forEach((item, index) => {
+      const x = startX + (index % gridSize) * (itemSize + padding);
+      const y = startY + Math.floor(index / gridSize) * (itemSize + padding);
+  
+      this.uiCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      this.uiCtx.fillRect(x, y, itemSize, itemSize);
+      this.uiCtx.strokeStyle = 'white';
+      this.uiCtx.strokeRect(x, y, itemSize, itemSize);
+  
+      this.uiCtx.fillStyle = 'white';
+      this.uiCtx.font = '12px Arial';
+      this.uiCtx.fillText(item.name, x + 5, y + 20);
+      this.uiCtx.fillText(`${item.price}골드`, x + 5, y + 40);
+  
+      item.renderX = x;
+      item.renderY = y;
+      item.renderWidth = itemSize;
+      item.renderHeight = itemSize;
+    });
+  
+    this.uiCtx.fillStyle = 'white';
+    this.uiCtx.font = '24px Arial';
+    this.uiCtx.fillText(`${type === 'weapon' ? '무기' : '방어구'} 구매`, 20, 40);
+  
+    this.render();
+  }
+  
+  // getClickedItem(x, y) {
+  //   return this.currentItems.find(item => 
+  //     x >= item.renderX && x <= item.renderX + item.renderWidth &&
+  //     y >= item.renderY && y <= item.renderY + item.renderHeight
+  //   );
+  // }
 
   drawAttackEffect(effect, x, y) {
     this.uiCtx.save();

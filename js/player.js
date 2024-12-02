@@ -1,63 +1,61 @@
 // player.js
 
+
+import { skillList } from './skills.js';
+import { gameConsole } from './console.js';
 import { Utils, Constants } from './utils.js';
 import { SpellBook, spellList  } from './spells.js';
-import { skillList } from './skills.js';
 import { weapons, armors, ArmorType, WeaponProperty  } from './equipments.js';
-import { gameConsole } from './console.js';
 
 export class Player {
   constructor() {
+    this.initializeBaseStats();
+    this.initializeInventory();
+    this.initializeEquipment();
+    this.initializeSkillsAndSpells();
+  }
+
+  initializeBaseStats() {
     this.name = "";
     this.race = "";
     this.class = "";
     this.level = 1;
-    this.maxLevel = 20;
+    this.xp = 290; // 임시
+    this.nextLevelXp = 300; // 다음 레벨까지 필요한 경험치
     this.hp = 0;
     this.maxHp = 0;
-    this.ac = 10; // 기본 AC 추가
-    this.gold = 0;
-    this.equippedWeapon = null;
-    this.equippedArmor = null;
-    this.equippedShield = null;
-    this.inventorySize = 20;
-    this.inventory = new Array(this.inventorySize).fill(null);
-    this.stats = {strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10,};
-    //this.xp = 0;
-    this.xp = 290; // 임시 세팅
-    this.nextLevelXp = 300; // 다음 레벨까지 필요한 경험치
+    this.ac = 10;
     this.proficiencyBonus = 2;
+    this.gold = 100;
+    this.skillPoints = 0;
+    this.stats = {strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10};
     this.xpTable = [
       0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000, 100000,
       120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000,
     ];
-    this.skillPoints = 0;
+  }
+
+  initializeInventory() {
+    this.inventorySize = 20;
+    this.inventory = new Array(this.inventorySize).fill(null);
+  }
+
+  initializeEquipment() {
+    this.equippedWeapon = null;
+    this.equippedArmor = null;
+    this.equippedShield = null;
+  }
+
+  initializeSkillsAndSpells() {
     this.skills = [];
     this.spellBook = new SpellBook();
   }
 
   reset() {
-    this.name = "";
-    this.race = "";
-    this.class = "";
-    this.level = 1;
-    this.hp = 0;
-    this.maxHp = 0;
-    this.ac = 10;
-    this.gold = 0;
-    this.inventory = new Array(this.inventorySize).fill(null);
-    this.stats = {strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10,};
-    this.xp = 0;
-    this.nextLevelXp = 300;
-    this.proficiencyBonus = 2;
-    this.skillPoints = 0;
-    this.equippedWeapon = null;
-    this.equippedArmor = null;
-    this.equippedShield = null;
-    this.skills = [];
-    this.spellBook = new SpellBook();
-    this.resetInventory();
-    this.updateInfo();
+    this.initializeBaseStats();
+    this.initializeInventory();
+    this.initializeEquipment();
+    this.initializeSkillsAndSpells();
   }
 
   setCharacter(name, race, characterClass) {
@@ -67,11 +65,28 @@ export class Player {
     this.setClassSuggestions();
     this.setRacialBonuses();
     this.setInitialHp();
-    this.setInitialAc(); // AC 초기화 메서드 호출
     this.setInitialEquipment(); // 새로운 메서드 호출
     this.setInitialSkills();
     this.setInitialSpells();
     this.updateInfo();
+  }
+
+  // 직업별 표준 능력치 셋 사용
+  setClassSuggestions() {
+    switch (this.class) {
+      case "Fighter":
+        this.stats = {strength: 15, dexterity: 13, constitution: 14, intelligence: 10, wisdom: 12, charisma: 8};
+        break;
+      case "Rogue":
+        this.stats = {strength: 8, dexterity: 15, constitution: 14, intelligence: 12, wisdom: 13, charisma: 10};
+        break;
+      case "Wizard":
+        this.stats = {strength: 8, dexterity: 13, constitution: 14, intelligence: 15, wisdom: 10, charisma: 12};
+        break;
+      case "Cleric":
+        this.stats = {strength: 13, dexterity: 12, constitution: 14, intelligence: 10, wisdom: 15, charisma: 8};
+        break;
+    }
   }
 
   setRacialBonuses() {
@@ -89,44 +104,6 @@ export class Player {
         break;
       case "Halfling":
         this.stats.dexterity += 2;
-        break;
-    }
-  }
-
-  // 직업별 표준 능력치 셋 사용
-  setClassSuggestions() {
-    switch (this.class) {
-      case "Fighter":
-        this.stats.strength += 5;
-        this.stats.dexterity += 3;
-        this.stats.constitution += 4;
-        this.stats.intelligence += 0;
-        this.stats.wisdom += 2;
-        this.stats.charisma -= 2;
-        break;
-      case "Rogue":
-        this.stats.strength -= 2;
-        this.stats.dexterity += 5;
-        this.stats.constitution += 4;
-        this.stats.intelligence += 2;
-        this.stats.wisdom += 3;
-        this.stats.charisma += 0;
-        break;
-      case "Wizard":
-        this.stats.strength -= 2;
-        this.stats.dexterity += 3;
-        this.stats.constitution += 4;
-        this.stats.intelligence += 5;
-        this.stats.wisdom += 0;
-        this.stats.charisma += 2;
-        break;
-      case "Cleric":
-        this.stats.strength += 3;
-        this.stats.dexterity += 2;
-        this.stats.constitution += 4;
-        this.stats.intelligence += 0;
-        this.stats.wisdom += 5;
-        this.stats.charisma -= 2;
         break;
     }
   }
@@ -151,11 +128,6 @@ export class Player {
     this.hp = this.maxHp;
   }
 
-  setInitialAc() {
-    // 기본 AC 10에 민첩 수정치를 더합니다.
-    this.ac = 10;
-  }
-
   setInitialEquipment() {
     // 직업에 따라 추가 장비 제공
     switch (this.class) {
@@ -178,7 +150,6 @@ export class Player {
   }
 
   setInitialSkills() {
-    // 예시로 몇 가지 기본 기술을 추가합니다 
     // 클래스에 따라 다른 기술을 추가할 수 있습니다
     switch (this.class) {
       case "Fighter":
@@ -191,16 +162,16 @@ export class Player {
 
   setInitialSpells() {
     switch (this.class) {
-        case "Wizard":
-            this.spellBook.learnSpell(spellList.magicMissile);
-            this.spellBook.prepareSpell("마법 화살");
-            this.spellBook.getAvailableSlots;  // 1레벨 주문 슬롯 2개
-            break;
-        case "Cleric":
-            this.spellBook.learnSpell(spellList.cureWounds);
-            this.spellBook.prepareSpell("상처 치료");
-            this.spellBook.getAvailableSlots;  // 1레벨 주문 슬롯 2개
-            break;
+      case "Wizard":
+        this.spellBook.learnSpell(spellList.magicMissile);
+        this.spellBook.prepareSpell("마법 화살");
+        this.spellBook.getAvailableSlots;  // 1레벨 주문 슬롯 2개
+        break;
+      case "Cleric":
+        this.spellBook.learnSpell(spellList.cureWounds);
+        this.spellBook.prepareSpell("상처 치료");
+        this.spellBook.getAvailableSlots;  // 1레벨 주문 슬롯 2개
+        break;
     }
   }
 
@@ -208,44 +179,15 @@ export class Player {
     return Utils.calculateModifier(this.stats[stat]);
   }
 
-  initializeInventory() {
-    const inventoryGrid = document.getElementById("inventory-grid");
-    inventoryGrid.innerHTML = "";
-    for (let i = 0; i < this.inventorySize; i++) {
-      const slot = document.createElement("div");
-      slot.className = "inventory-slot empty";
-      slot.dataset.index = i;
-      inventoryGrid.appendChild(slot);
-    }
-  }
-
   resetInventory() {
     this.inventory = new Array(this.inventorySize).fill(null);
     this.updateInventoryUI();
-  }
-
-  updateInventoryUI() {
-    const inventoryGrid = document.getElementById("inventory-grid");
-    inventoryGrid.innerHTML = "";
-    for (let i = 0; i < this.inventorySize; i++) {
-      const slot = document.createElement("div");
-      slot.className = "inventory-slot empty";
-      slot.dataset.index = i;
-      if (this.inventory[i]) {
-        slot.textContent = this.inventory[i].name;
-        slot.className = "inventory-slot";
-        slot.title = this.inventory[i].description;
-        slot.onclick = () => this.useItem(i);
-      }
-      inventoryGrid.appendChild(slot);
-    }
   }
 
   addItem(item) {
     const emptySlot = this.inventory.findIndex((slot) => slot === null);
     if (emptySlot !== -1) {
       this.inventory[emptySlot] = item;
-      this.updateInventoryUI();
       return true;
     }
     return false;
@@ -253,12 +195,10 @@ export class Player {
 
   removeItem(index) {
     if (this.inventory[index]) {
-      const item = this.inventory[index];
       this.inventory[index] = null;
-      this.updateInventoryUI();
-      return item;
+      return;
     }
-    return null;
+    return;
   }
 
   equipItem(itemType, item) {
@@ -354,16 +294,6 @@ export class Player {
   heal(amount) {
     this.hp = Math.min(this.maxHp, this.hp + amount);
     this.updateInfo();
-  }
-
-  useItem(index) {
-    const item = this.inventory[index];
-    if (item) {
-      item.use(this);
-      this.removeItem(index);
-      return true;
-    }
-    return false;
   }
 
   gainGold(amount) {
@@ -508,6 +438,11 @@ export class Player {
       hpElement.style.color = this.hp < this.maxHp / 2 ? "red" : "yellow";
     } else {
       hpElement.style.color = "white";
+    }
+
+    // 캔버스 업데이트 추가
+    if (this.game && this.game.canvasManager) {
+      this.game.canvasManager.updateCharacterCanvas(this);
     }
   }
 

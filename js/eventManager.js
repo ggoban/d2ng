@@ -44,7 +44,7 @@ export class GameEventManager {
     this.addListener("innButton", "click", () => this.game.goToInn());
     this.addListener("shopButton", "click", () => this.game.goToShop());
     this.addListener("guildButton", "click", () => this.game.goToGuild());
-    this.addListener("blacksmithButton", "click", () => this.game.goToBlacksmith());
+    this.addListener("forgeButton", "click", () => this.game.goToForge());
     this.addListener("dungeonButton", "click", () => this.game.goToDungeon());
     this.addListener("exploreButton", "click", () => this.game.explore());
     this.addListener("nextFloorButton", "click", () => this.game.goToNextFloor());

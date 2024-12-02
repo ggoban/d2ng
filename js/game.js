@@ -3,6 +3,7 @@
 import { Player } from './player.js';
 import { Battle } from './battle.js';
 import { itemList } from './item.js';
+import { weapons, armors } from './equipments.js';
 import { monsterList } from './monster.js';
 import { gameConsole } from './console.js';
 
@@ -10,8 +11,6 @@ import { EventManager } from './event.js';
 import { CanvasManager } from './canvasManager.js';
 import { DialogueManager } from './dialogueManager.js';
 import { GameEventManager } from './eventManager.js';  // 이건 DOM 이벤트 리스너 관리 매니저인데 게임 이벤트 매니저랑 겹치네...
-
-//import { Spell } from './spells.js';
 
 export class Game {
   constructor() {
@@ -68,8 +67,8 @@ export class Game {
 
   async initialize() {
     gameConsole.clear();
-    this.gameEventManager.setupEventListeners();  // DOM 이벤트 리스너
     this.player.initializeInventory();
+    this.gameEventManager.setupEventListeners();  // DOM 이벤트 리스너
     this.showLoadingScreen();
     await this.loadAllImages();
     this.hideLoadingScreen();
@@ -98,11 +97,11 @@ export class Game {
       { name: "shop", src: "images/shop.jpg" },
       { name: "guild", src: "images/guild.jpg" },
       { name: "dungeon", src: "images/dungeon.jpg" },
-      { name: "blacksmith", src: "images/blacksmith.jpg" },
+      { name: "forge", src: "images/forge.jpg" },
       { name: "npc_inn", src: "images/portrait/innkeeper.jpg" },
       { name: "npc_shop", src: "images/portrait/shopkeeper.jpg" },
       { name: "npc_guild", src: "images/portrait/guildmaster.jpg" },
-      { name: "npc_blacksmith", src: "images/portrait/blacksmith.jpg" },
+      { name: "npc_forge", src: "images/portrait/blacksmith.jpg" },
       { name: "goblin", src: "images/monster/goblin.png" },
       { name: "frog", src: "images/monster/frog.png" },
       { name: "giantfrog", src: "images/monster/giantfrog.png" },
@@ -155,18 +154,20 @@ export class Game {
     this.updateSkillPanel();
     this.updateCanvas();
     this.addTestItem();
+    this.updateInventoryUI();
     // 여기에 게임 시작 후 추가적인 초기화 로직을 넣을 수 있습니다.
   }
 
   gameOver() {
     if (this.isGameOver) return;
+    this.isGameOver = true; // 게임 오버 상태 추가
     //this.saveConsoleToFile();
-    this.gameEventManager.removeListener("attckButton","click");
+    //this.gameEventManager.removeListener("attckButton","click");
     this.player.reset(); // player reset 호출 추가
+    this.player.updateInfo();
+    this.updateInventoryUI();
     this.updateSpellPanel();
     this.updateSkillPanel();
-    this.isGameOver = true; // 게임 오버 상태 추가
-    //this.updateCanvas();
     this.showRestartButton();
   }
 
@@ -206,16 +207,14 @@ export class Game {
   }
 
   handleCanvasClick(e) {
-    //const canvas = this.canvasManager.getMainCanvas();
     const rect = this.canvasManager.getMainCanvas().getBoundingClientRect();
-  //  const rect = canvas.getBoundingClientRect();
     const scaleX = this.canvasManager.width / rect.width;
     const scaleY = this.canvasManager.height / rect.height;
 
     const x = (e.clientX - rect.left) * scaleX;
     const y = (e.clientY - rect.top) * scaleY;
 
-    if (['inn', 'shop', 'guild', 'blacksmith'].includes(this.currentLocation)) {
+    if (['inn', 'shop', 'guild', 'forge'].includes(this.currentLocation)) {
       this.dialogueManager.handleClick(x, y);
     } else if (this.isGameOver) {
       // 게임 오버 상태에서의 클릭 처리
@@ -247,7 +246,7 @@ export class Game {
         case 'inn':
         case 'shop':
         case 'guild':
-        case 'blacksmith':
+        case 'forge':
           this.canvasManager.drawBackground(this.currentLocation);
           this.canvasManager.drawDialogueBox(this.dialogueManager.getDialogueText(), 'npc_'+this.currentLocation);
           this.canvasManager.drawDialogueOptions(this.dialogueManager.options);
@@ -261,6 +260,7 @@ export class Game {
         case "dungeon":
           if (this.isInBattle && this.currentBattle) {
             this.canvasManager.drawBattleScene(this.player, this.currentBattle.monster);
+            this.canvasManager.drawRound(this.currentBattle.round);
           } else {
             this.canvasManager.drawExplorationProgress(this.exploration);
           }
@@ -274,8 +274,29 @@ export class Game {
   goToInn() {
     this.currentLocation = "inn";
     this.dialogueManager.startDialogue('innkeeper', "안녕하세요, 여행자님. 휴식을 취하시겠습니까? 10골드에 체력을 모두 회복할 수 있습니다.");
+    this.dialogueManager.options = [
+      { text: "1. 인사한다", action: () => this.dialogueManager.greet('innkeeper') },
+      { text: "2. 휴식한다(10골드)", action: () => this.rest() },
+      { text: "3. 나간다", action: () => this.backToTown() }
+    ];
     this.updateCanvas();
-    // 여기에 휴식 기능 추가
+  }
+
+  rest() {
+    if (this.player.gold >= 10) {
+      this.player.gold -= 10;
+      this.player.hp = this.player.maxHp;
+      this.player.spellBook.resetSlots(this.player.level);
+      // 기술 횟수 초기화 (예: Fighter의 Second Wind)
+      if (this.player.class === "Fighter") {
+        //Fighter.secondWindReset();
+      }
+      gameConsole.log("휴식을 취했습니다. 체력과 주문 슬롯이 모두 회복되었습니다.");
+      this.player.updateInfo();
+      //this.updateCanvas();
+    } else {
+      gameConsole.log("골드가 부족합니다.");
+    }
   }
 
   goToShop() {
@@ -292,11 +313,60 @@ export class Game {
     // 여기에 길드 기능 추가
   }
 
-  goToBlacksmith() {
-    this.currentLocation = "blacksmith";
-    this.dialogueManager.startDialogue('blacksmitchmen', "대장간에 오신 것을 환영합니다. 무기를 강화하시겠습니까? 아니면 새로운 방어구를 제작하시겠습니까?");
+  goToForge() {
+    this.currentLocation = "forge";
+    this.dialogueManager.startDialogue('blacksmith', "대장간에 오신 것을 환영합니다. 무엇을 도와드릴까요?");
+    this.dialogueManager.options = [
+      { text: "1. 무기 구매", action: () => this.showForgeItems('weapon') },
+      { text: "2. 방어구 구매", action: () => this.showForgeItems('armor') },
+      { text: "3. 나가기", action: () => this.backToTown() }
+    ];
     this.updateCanvas();
     // 여기에 대장간 기능 추가
+  }
+
+  showForgeItems(type) {
+    const items = type === 'weapon' ? this.getAvailableWeapons() : this.getAvailableArmors();
+    this.canvasManager.drawForgeItems(items, type);
+    this.canvasManager.getMainCanvas().addEventListener('click', this.handleForgeItemClick.bind(this));
+  }
+  
+  handleForgeItemClick(e) {
+    const rect = this.canvasManager.getMainCanvas().getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const clickedItem = this.canvasManager.getClickedItem(x, y);
+    if (clickedItem) {
+      this.buyItem(clickedItem);
+    }
+  }
+  
+  buyItem(item) {
+    if (this.player.gold >= item.price) {
+      this.player.gold -= item.price;
+      this.player.addItem(item);
+      gameConsole.log(`${item.name}을(를) 구매했습니다.`);
+      this.updateCanvas();
+    } else {
+      gameConsole.log("골드가 부족합니다.");
+    }
+  }
+
+  getAvailableWeapons() {
+    return [weapons.longsword, weapons.shortsword, weapons.dagger, weapons.mace];
+  }
+  
+  getAvailableArmors() {
+    return [armors.leather, armors.chainShirt, armors.shield];
+  }
+   
+  sellItem(index) {
+    const item = this.player.inventory[index];
+    const sellPrice = Math.floor(item.price / 2);
+    this.player.gold += sellPrice;
+    this.player.removeItem(index);
+    gameConsole.log(`${item.name}을(를) ${sellPrice}골드에 판매했습니다.`);
+    this.updateCanvas();
   }
 
   goToDungeon() {
@@ -323,16 +393,54 @@ export class Game {
 
   explore() {
     if (this.isInBattle) return;
-
     const explorationGain = Math.floor(Math.random() * 20) + 5; // 5-20 사이의 랜덤 값
-
-    // 랜덤 전투 발생
-    if (Math.random() < 0.99) {
-      // 30% 확률로 전투 발생
+  
+    const eventRoll = Math.random();
+    // 전투 60%, 돌발이벤트 30%, 그냥 탐사 10%
+    if (eventRoll < 0.6) {
       this.startBattle(explorationGain);
-    } else {
+    } else if (eventRoll < 0.9) {
+      this.triggerRandomEvent();
+    }else {
       this.increaseExploration(explorationGain);
     }
+  }
+
+  triggerRandomEvent() {
+    const eventRoll = Math.random();
+    if (eventRoll < 0.5) {
+      this.trapEvent();
+    } else {
+      this.treasureEvent();
+    }
+  }
+
+  trapEvent() {
+    const damage = Math.floor(Math.random() * 5) + 1; // 1-5 사이의 랜덤 데미지
+    this.player.takeDamage(damage);
+    gameConsole.log(`던전을 탐사하다 함정에 걸려 ${damage}의 피해를 입었습니다.`);
+    this.updateCanvas();
+  }
+
+  treasureEvent() {
+    gameConsole.log("숨겨진 보물 상자를 발견했습니다. 상자를 열어보시겠습니까?");
+    
+    // 여기서 플레이어의 선택을 기다리는 로직이 필요합니다.
+    // 예를 들어, 버튼을 생성하고 클릭 이벤트를 처리할 수 있습니다.
+    
+    const openTreasure = () => {
+      const dcCheck = Utils.rollDice(20) + this.player.getModifier("dexterity");
+      if (dcCheck >= 12) { // DC 12로 가정
+        const gold = Math.floor(Math.random() * 50) + 10; // 10-59 골드
+        this.player.gainGold(gold);
+        gameConsole.log(`상자를 성공적으로 열었습니다! ${gold} 골드를 획득했습니다.`);
+      } else {
+        gameConsole.log("상자를 여는데 실패했습니다.");
+      }
+      this.updateCanvas();
+    };
+  
+    // 여기서 openTreasure 함수를 호출하는 버튼을 생성하고 이벤트 리스너를 추가합니다.
   }
 
   startBattle(explorationGain) {
@@ -436,6 +544,28 @@ export class Game {
   addItemToInventory(item) {
     this.player.addItem(item);
     gameConsole.log(`${item.name}을(를) 획득했습니다!`);
+  }
+
+  updateInventoryUI() {
+    const inventoryGrid = document.getElementById("inventory-grid");
+    inventoryGrid.innerHTML = "";
+    for (let i = 0; i < this.player.inventorySize; i++) {
+      const slot = document.createElement("div");
+      slot.className = "inventory-slot empty";
+      slot.dataset.index = i;
+      if (this.player.inventory[i]) {
+        slot.textContent = this.player.inventory[i].name;
+        slot.className = "inventory-slot";
+        slot.title = this.player.inventory[i].description;
+        if (this.isInBattle) slot.onclick = () => this.currentBattle.useItem(i);
+        else slot.onclick = () => this.useItem(i);
+      }
+      inventoryGrid.appendChild(slot);
+    }
+  }
+
+  useItem() {
+    gameConsole.log("우리 마을에서는 아이템 사용이 허용되지 않습니다.");
   }
 
   updateSkillPanel() {

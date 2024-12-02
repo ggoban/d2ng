@@ -20,8 +20,8 @@ const smallHealingPotion = new Item(
   "HP를 10 회복시킵니다.",
   (player) => {
       const healAmount = 10;
-      player.heal(healAmount);
-      gameConsole.log(`힐링포션(소)를 사용하여 ${player.name}의 HP가 ${healAmount} 회복되었습니다.`);
+      player.player.heal(healAmount);
+      gameConsole.log(`힐링포션(소)를 사용하여 ${player.player.name}의 HP가 ${healAmount} 회복되었습니다.`);
   }
 );
 
